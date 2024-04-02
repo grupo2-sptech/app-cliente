@@ -1,0 +1,4 @@
+user=root
+password=jhow
+dburl=jdbc:mysql://localhost:3306/hardware_security
+useSSL=false
