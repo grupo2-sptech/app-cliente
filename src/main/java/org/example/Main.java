@@ -25,16 +25,17 @@ public class Main {
 
 //        System.out.println(looca.getMemoria().getTotal());
 //        System.out.println(looca.getMemoria().getEmUso());
+//        while (true){
+//        System.out.println(looca.getProcessador().getUso());
+//        Thread.sleep(1000);
+//        }
 //        System.out.println(looca.getGrupoDeDiscos().getTamanhoTotal());
 //        System.out.println(looca.getGrupoDeDiscos().getVolumes().get(0).getDisponivel());
-//        System.out.println(looca.getProcessador().getUso());
-        System.out.println(looca.getMemoria().getTotal());
-        System.out.println(looca.getMemoria().getEmUso());
+
 
         Connection conn = null;
         Statement st = null;
         ResultSet rt = null;
-
 
         utils.centralizaTelaHorizontal(22);
         System.out.println("Email:");
@@ -50,7 +51,7 @@ public class Main {
 
         String query = """
                 SELECT funcionario_id, nome_funcionario, maquina_id from
-                funcionario join maquina on fk_funcionario = funcionario_id WHERE 
+                funcionario join maquina on fk_funcionario = funcionario_id WHERE
                 email_funcionario  = '%s' AND senha_acesso = '%s' OR
                 login_acesso = '%s' AND senha_acesso = '%s';
                 """.formatted(email, senha, email, senha);
@@ -70,21 +71,28 @@ public class Main {
                 System.out.println(query);
 
 
-
                 while (true) {
                     PreparedStatement st1;
-//                    query = "update historico_hardware set ram_ocupada = " + looca.getMemoria().getEmUso() + ", cpu_ocupada = %.1f where fk_maquina = %d;".formatted(looca.getProcessador().getUso(), maquina_id);
-                    st1 = conn.prepareStatement("update historico_hardware set ram_ocupada = ?, cpu_ocupada = ? where fk_maquina = ?;");
-                    String formattedDouble = decimalFormat.format(looca.getProcessador().getUso());;
+                    PreparedStatement st2;
+                    st1 = conn.prepareStatement("update historico_hardware set ram_ocupada = ?, cpu_ocupada = ?, data_hora = now() where fk_maquina = ?;");
+                    String formattedDouble = decimalFormat.format(looca.getProcessador().getUso());
                     st1.setLong(1, looca.getMemoria().getEmUso());
                     st1.setDouble(2, Double.parseDouble(formattedDouble));
                     st1.setInt(3, maquina_id);
-                    System.out.println(maquina_id);
+                    System.out.println(st1);
 
-                    int linhasAfetadas = st1.executeUpdate();
+                    st2 = conn.prepareStatement("update maquina set memoria_total_disco = ?, memoria_ocupada = ? where maquina_id = ?;");
+                    st2.setLong(1, looca.getGrupoDeDiscos().getTamanhoTotal());
+                    st2.setLong(2, looca.getGrupoDeDiscos().getVolumes().get(0).getDisponivel());
+                    st2.setInt(3, maquina_id);
+                    System.out.println(st2);
+//
+                    int linhasAfetadas1 = st1.executeUpdate();
+                    int linhasAfetadas2 = st2.executeUpdate();
 
-                    System.out.println("Linhas afetadas:" + linhasAfetadas);
-                    Thread.sleep(3000);
+                    System.out.println("Linhas afetadas:" + linhasAfetadas1);
+                    System.out.println("Linhas afetadas:" + linhasAfetadas2);
+                    Thread.sleep(1500);
                 }
             } else {
                 System.out.println("Usiario invalido");
@@ -96,7 +104,7 @@ public class Main {
             DB.cloneConection();
         }
 
-        limparConsole();
+               limparConsole();
 
 //        do {
 //            utils.exibirLogo();
