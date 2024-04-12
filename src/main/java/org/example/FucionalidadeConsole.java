@@ -10,6 +10,7 @@ public class FucionalidadeConsole {
             while (true) {
                 String os = System.getProperty("os.name");
                 if (os.contains("Windows")) {
+                    // Se for Windows, mantenha o código existente
                     limparConsole();
                     System.out.println("""
                                   
@@ -40,7 +41,23 @@ public class FucionalidadeConsole {
                         System.out.println("Programa indevido foi encerrado com sucesso!");
                     }
                 } else {
-                    Runtime.getRuntime().exec("Erro");
+                    // Se for Linux, execute o comando para matar o processo
+                    try {
+                        Process process = Runtime.getRuntime().exec("ps -e");
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            if (line.contains("whatsApp")) {
+                                String[] parts = line.trim().split("\\s+");
+                                String pid = parts[0];
+                                Process killProcess = Runtime.getRuntime().exec("kill -9 " + pid);
+                                killProcess.waitFor();
+                                // Adicione aqui a lógica para notificar que o processo foi encerrado
+                            }
+                        }
+                    } catch (IOException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
                 Thread.sleep(5000);
             }
