@@ -24,9 +24,6 @@ public class Main {
         Statement st = null;
         ResultSet rt = null;
 
-//        System.out.println(looca.getRede().getGrupoDeInterfaces().getInterfaces());
-//        System.out.println(looca.getProcessador().getUso());
-//
         utils.centralizaTelaHorizontal(22);
         System.out.println("Email:");
         utils.centralizaTelaHorizontal(22);
@@ -36,7 +33,11 @@ public class Main {
         System.out.println("Senha:");
         utils.centralizaTelaHorizontal(22);
         String senha = sc.next();
-        Integer id_usuario;
+        Integer id_setor;
+        Integer idProcessador = 0;
+        Integer idRam = 0;
+        Integer idDisco = 0;
+
         List<String> processosBloqueados = new ArrayList();
 
         String query = """
@@ -49,42 +50,66 @@ public class Main {
                     login_acesso = '%s' AND senha_acesso = '%s';
                 """.formatted(email, senha, email, senha);
 
+        System.out.println(query);
+
         try {
+
+
             conn = DB.getConection();
             st = conn.createStatement();
-            System.out.println(query);
             rt = st.executeQuery(query);
 
             if (rt.next()) {
                 System.out.println("Usuario Valido");
-                id_usuario = rt.getInt("funcionario_id");
+                id_setor = rt.getInt("setor_id");
 
                 processosBloqueados.add(Arrays.toString(rt.getString("titulo_processo").split(",")));
 
                 while (rt.next()) {
                     processosBloqueados.add(Arrays.toString(rt.getString("titulo_processo").split(",")));
-
                 }
 
-                System.out.println(processosBloqueados);
+                rt = null;
+                st = null;
+
+                String queryMaquina = """
+                        SELECT fk_ram, fk_processador, fk_disco from
+                        maquina where processador_id = '%s';
+                        """.formatted(looca.getProcessador().getId());
+
+                System.out.println(queryMaquina);
+                st = conn.createStatement();
+                rt = st.executeQuery(queryMaquina);
+
+                if (rt.next()) {
+                    idProcessador = rt.getInt("fk_processador");
+                    idRam = rt.getInt("fk_ram");
+                    idDisco = rt.getInt("fk_disco");
+                }
+
+
+                PreparedStatement st3;
+                st3 = conn.prepareStatement("update disco set tamanho_total = ?, tamanho_disponivel = ? where id_processador = ?;");
+                st3.setLong(1, looca.getGrupoDeDiscos().getTamanhoTotal());
+                st3.setLong(2, looca.getGrupoDeDiscos().getVolumes().get(0).getDisponivel());
+                st3.setInt(3, idDisco);
+                System.out.println(st3);
 
 
                 while (true) {
                     PreparedStatement st1;
                     PreparedStatement st2;
-                    st1 = conn.prepareStatement("update historico_hardware set ram_ocupada = ?, cpu_ocupada = ?, data_hora = now() where fk_maquina = ?;");
-                    String formattedDouble = decimalFormat.format(looca.getProcessador().getUso());
-                    st1.setLong(1, looca.getMemoria().getEmUso());
-                    st1.setDouble(2, Double.parseDouble(formattedDouble));
-//                    st1.setInt(3, maquina_id);
+
+                    st1 = conn.prepareStatement("update processador set uso_processador = ?, hora_data_processador = now() where id_processador = ?;");
+                    st1.setDouble(1, Math.round(looca.getProcessador().getUso() * 100.0) / 100.0);
+                    st1.setInt(2, idProcessador);
                     System.out.println(st1);
 
-                    st2 = conn.prepareStatement("update maquina set memoria_total_disco = ?, memoria_ocupada = ? where maquina_id = ?;");
-                    st2.setLong(1, looca.getGrupoDeDiscos().getTamanhoTotal());
-                    st2.setLong(2, looca.getGrupoDeDiscos().getVolumes().get(0).getDisponivel());
-//                    st2.setInt(3, maquina_id);
+                    st2 = conn.prepareStatement("update memoria_ram set uso_ram_gb = ?, id_memoria_ram = ?;");
+                    st2.setDouble(1, Math.round((double) looca.getMemoria().getEmUso() / Math.pow(1024, 3) * 100.0) / 100.0);
+                    st2.setInt(2, idRam);
                     System.out.println(st2);
-////
+
                     int linhasAfetadas1 = st1.executeUpdate();
                     int linhasAfetadas2 = st2.executeUpdate();
 
@@ -93,7 +118,7 @@ public class Main {
                     Thread.sleep(1000);
                 }
 
-        } else {
+            } else {
                 System.out.println("Usuario invalido");
             }
         } catch (SQLException e) {
