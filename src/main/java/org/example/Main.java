@@ -20,6 +20,7 @@ public class Main {
         String pattern = "#.##";
         DecimalFormat decimalFormat = new DecimalFormat(pattern);
 
+
         Connection conn = null;
         Statement st = null;
         ResultSet rt = null;
@@ -33,10 +34,7 @@ public class Main {
         System.out.println("Senha:");
         utils.centralizaTelaHorizontal(22);
         String senha = sc.next();
-        Integer id_setor;
-        Integer idProcessador = 0;
-        Integer idRam = 0;
-        Integer idDisco = 0;
+        Integer maquinaId = 0;
 
         List<String> processosBloqueados = new ArrayList();
 
@@ -61,7 +59,7 @@ public class Main {
 
             if (rt.next()) {
                 System.out.println("Usuario Valido");
-                id_setor = rt.getInt("setor_id");
+
 
                 processosBloqueados.add(Arrays.toString(rt.getString("titulo_processo").split(",")));
 
@@ -73,7 +71,7 @@ public class Main {
                 st = null;
 
                 String queryMaquina = """
-                        SELECT fk_ram, fk_processador, fk_disco from
+                        SELECT maquina_id from
                         maquina where processador_id = '%s';
                         """.formatted(looca.getProcessador().getId());
 
@@ -82,39 +80,39 @@ public class Main {
                 rt = st.executeQuery(queryMaquina);
 
                 if (rt.next()) {
-                    idProcessador = rt.getInt("fk_processador");
-                    idRam = rt.getInt("fk_ram");
-                    idDisco = rt.getInt("fk_disco");
+                    maquinaId = rt.getInt("maquina_id");
                 }
 
 
                 PreparedStatement st3;
-                st3 = conn.prepareStatement("update disco set tamanho_total = ?, tamanho_disponivel = ? where id_processador = ?;");
+                st3 = conn.prepareStatement("""
+                        update componente set tamanho_total_gb = ?,
+                        tamanho_disponivel_gb = ?
+                        where fk_maquina = ? and tipo_componente = disco
+                        ;
+                        """);
                 st3.setLong(1, looca.getGrupoDeDiscos().getTamanhoTotal());
                 st3.setLong(2, looca.getGrupoDeDiscos().getVolumes().get(0).getDisponivel());
-                st3.setInt(3, idDisco);
+                st3.setInt(3, maquinaId);
                 System.out.println(st3);
 
 
                 while (true) {
                     PreparedStatement st1;
-                    PreparedStatement st2;
 
-                    st1 = conn.prepareStatement("update processador set uso_processador = ?, hora_data_processador = now() where id_processador = ?;");
+
+                    st1 = conn.prepareStatement("""
+                            insert into historico_hardware (cpu_ocupada, ram_ocupada, fk_maquina, data_hora)
+                            values(?, ?, ?, now());
+                            """);
                     st1.setDouble(1, Math.round(looca.getProcessador().getUso() * 100.0) / 100.0);
-                    st1.setInt(2, idProcessador);
+                    st1.setDouble(2, Math.round((double) looca.getMemoria().getEmUso() / Math.pow(1024, 3) * 100.0) / 100.0);
+                    st1.setInt(3, maquinaId);
                     System.out.println(st1);
 
-                    st2 = conn.prepareStatement("update memoria_ram set uso_ram_gb = ?, id_memoria_ram = ?;");
-                    st2.setDouble(1, Math.round((double) looca.getMemoria().getEmUso() / Math.pow(1024, 3) * 100.0) / 100.0);
-                    st2.setInt(2, idRam);
-                    System.out.println(st2);
 
                     int linhasAfetadas1 = st1.executeUpdate();
-                    int linhasAfetadas2 = st2.executeUpdate();
-
                     System.out.println("Linhas afetadas:" + linhasAfetadas1);
-                    System.out.println("Linhas afetadas:" + linhasAfetadas2);
                     Thread.sleep(1000);
                 }
 
