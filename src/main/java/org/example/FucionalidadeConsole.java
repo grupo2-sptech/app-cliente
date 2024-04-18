@@ -92,6 +92,25 @@ public class FucionalidadeConsole {
         return false;
     }
 
+        //Encerrar processo por PID
+
+//    private static void encerrarJanela(Integer pid) {
+//        try {
+//            Sistema sistema = new Sistema();
+//            sistema.encerraProcesso(pid);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+//    public void encerraProcesso(Integer pid) {
+//        try {
+//            Runtime.getRuntime().exec("taskkill /F /PID " + pid);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
     public static void bloquearSite(String site) {
         String hostsFilePath = System.getenv("SystemRoot") + "\\System32\\drivers\\etc\\hosts";
         String linhaBloqueio = "127.0.0.1 " + site;
@@ -103,5 +122,7 @@ public class FucionalidadeConsole {
             System.err.println("Erro ao bloquear o site: " + e.getMessage());
         }
     }
+
+
 }
 

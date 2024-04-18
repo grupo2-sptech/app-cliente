@@ -2,6 +2,7 @@ package org.example;
 
 
 import com.github.britooo.looca.api.core.Looca;
+import com.github.britooo.looca.api.group.janelas.Janela;
 import org.example.db.DB;
 
 
@@ -95,6 +96,26 @@ public class Main {
                 st3.setLong(2, looca.getGrupoDeDiscos().getVolumes().get(0).getDisponivel());
                 st3.setInt(3, maquinaId);
                 System.out.println(st3);
+
+
+                //Encerrar processo por PID
+
+//                Looca janelaGroup = new Looca();
+//
+//                while (true) {
+//                    for (Janela janela : janelaGroup.getGrupoDeJanelas().getJanelas()) {
+//
+//                        if (janela.getTitulo().contains("Spotify")) {
+//
+//                            encerrarJanela(Math.toIntExact(janela.getPid()));
+//                            System.out.println("Janela encerrada: " + janela.getTitulo() + " (PID: " + janela.getPid() + ")");
+//                        }
+//                    }
+//                    Thread.sleep(2000);
+//                }
+//            }
+
+
 
 
                 while (true) {
