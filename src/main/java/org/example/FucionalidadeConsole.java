@@ -1,6 +1,16 @@
 package org.example;
 
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.User32;
+import com.sun.jna.platform.win32.WinDef;
+import com.sun.jna.platform.win32.WinUser;
+import com.sun.jna.ptr.IntByReference;
+
+
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FucionalidadeConsole {
 
@@ -92,7 +102,7 @@ public class FucionalidadeConsole {
         return false;
     }
 
-        //Encerrar processo por PID
+    //Encerrar processo por PID
 
 //    private static void encerrarJanela(Integer pid) {
 //        try {
@@ -103,13 +113,13 @@ public class FucionalidadeConsole {
 //        }
 //    }
 
-//    public void encerraProcesso(Integer pid) {
-//        try {
-//            Runtime.getRuntime().exec("taskkill /F /PID " + pid);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    public void encerraProcesso(Integer pid) {
+        try {
+            Runtime.getRuntime().exec("taskkill /F /PID " + pid);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void bloquearSite(String site) {
         String hostsFilePath = System.getenv("SystemRoot") + "\\System32\\drivers\\etc\\hosts";

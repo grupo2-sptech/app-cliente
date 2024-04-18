@@ -62,10 +62,10 @@ public class Main {
                 System.out.println("Usuario Valido");
 
 
-                processosBloqueados.add(Arrays.toString(rt.getString("titulo_processo").split(",")));
+                processosBloqueados.add(rt.getString("titulo_processo"));
 
                 while (rt.next()) {
-                    processosBloqueados.add(Arrays.toString(rt.getString("titulo_processo").split(",")));
+                    processosBloqueados.add(rt.getString("titulo_processo"));
                 }
 
                 rt = null;
@@ -100,28 +100,21 @@ public class Main {
 
                 //Encerrar processo por PID
 
-//                Looca janelaGroup = new Looca();
-//
-//                while (true) {
-//                    for (Janela janela : janelaGroup.getGrupoDeJanelas().getJanelas()) {
-//
-//                        if (janela.getTitulo().contains("Spotify")) {
-//
-//                            encerrarJanela(Math.toIntExact(janela.getPid()));
-//                            System.out.println("Janela encerrada: " + janela.getTitulo() + " (PID: " + janela.getPid() + ")");
-//                        }
-//                    }
-//                    Thread.sleep(2000);
-//                }
-//            }
-
-
-
+                Looca janelaGroup = new Looca();
+                FucionalidadeConsole func = new FucionalidadeConsole();
 
                 while (true) {
+                    for (Janela janela : janelaGroup.getGrupoDeJanelas().getJanelas()) {
+                        for (int i = 0; i < processosBloqueados.size(); i++) {
+                            if (janela.getTitulo().contains(processosBloqueados.get(i))) {
+                                func.encerraProcesso(Math.toIntExact(janela.getPid()));
+                                System.out.println("Janela encerrada: " + janela.getTitulo() + " (PID: " + janela.getPid() + ")");
+                            }
+                        }
+
+                    }
+
                     PreparedStatement st1;
-
-
                     st1 = conn.prepareStatement("""
                             insert into historico_hardware (cpu_ocupada, ram_ocupada, fk_maquina, data_hora)
                             values(?, ?, ?, now());
