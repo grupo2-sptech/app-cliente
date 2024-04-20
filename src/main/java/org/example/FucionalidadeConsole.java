@@ -78,11 +78,11 @@ public class FucionalidadeConsole {
 
     static void limparConsole() {
         try {
-            String os = System.getProperty("os.name");
+            final String os = System.getProperty("os.name");
             if (os.contains("Windows")) {
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
             } else {
-                Runtime.getRuntime().exec("clear");
+                System.out.print("\033\143");
             }
         } catch (final Exception exception) {
             System.out.println("Erro ao Limpar o console!");

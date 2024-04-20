@@ -26,6 +26,11 @@ public class Main {
         Statement st = null;
         ResultSet rt = null;
 
+        limparConsole();
+        utils.exibirLogo();
+        utils.exibirMenu();
+        utils.exibirMensagem();
+
         utils.centralizaTelaHorizontal(22);
         System.out.println("Email:");
         utils.centralizaTelaHorizontal(22);
@@ -49,8 +54,6 @@ public class Main {
                     login_acesso = '%s' AND senha_acesso = '%s';
                 """.formatted(email, senha, email, senha);
 
-        System.out.println(query);
-
         try {
 
 
@@ -59,8 +62,12 @@ public class Main {
             rt = st.executeQuery(query);
 
             if (rt.next()) {
+                utils.centralizaTelaVertical(1);
+                utils.centralizaTelaHorizontal(22);
                 System.out.println("Usuario Valido");
-
+                Thread.sleep(3000);
+                limparConsole();
+                utils.mensagemInformativa();
 
                 processosBloqueados.add(rt.getString("titulo_processo"));
 
@@ -76,7 +83,6 @@ public class Main {
                         maquina where processador_id = '%s';
                         """.formatted(looca.getProcessador().getId());
 
-                System.out.println(queryMaquina);
                 st = conn.createStatement();
                 rt = st.executeQuery(queryMaquina);
 
@@ -95,23 +101,23 @@ public class Main {
                 st3.setLong(1, looca.getGrupoDeDiscos().getTamanhoTotal());
                 st3.setLong(2, looca.getGrupoDeDiscos().getVolumes().get(0).getDisponivel());
                 st3.setInt(3, maquinaId);
-                System.out.println(st3);
-
 
                 //Encerrar processo por PID
 
                 Looca janelaGroup = new Looca();
                 FucionalidadeConsole func = new FucionalidadeConsole();
-                System.out.println(janelaGroup.getGrupoDeJanelas().getJanelas());
-                System.out.println(processosBloqueados);
 
                 while (true) {
                     for (Janela janela : janelaGroup.getGrupoDeJanelas().getJanelas()) {
                         for (int i = 0; i < processosBloqueados.size(); i++) {
                             if (janela.getTitulo().contains(processosBloqueados.get(i))) {
                                 func.encerraProcesso(Math.toIntExact(janela.getPid()));
+                                utils.centralizaTelaVertical(1);
+                                utils.centralizaTelaHorizontal(8);
                                 System.out.println("Processo " + janela.getTitulo() + " foi encerrado por violar as políticas de segurança da empresa!");
 
+                                Thread.sleep(5000);
+                                limparConsole();
 
                             }
                         }
@@ -126,11 +132,25 @@ public class Main {
                     st1.setDouble(1, Math.round(looca.getProcessador().getUso() * 100.0) / 100.0);
                     st1.setDouble(2, Math.round((double) looca.getMemoria().getEmUso() / Math.pow(1024, 3) * 100.0) / 100.0);
                     st1.setInt(3, maquinaId);
-                    System.out.println(st1);
-
 
                     st1.executeUpdate();
                     Thread.sleep(1000);
+                    String processos = "";
+
+                    limparConsole();
+                    utils.mensagemInformativa();
+
+                    for (int i = 0; i < processosBloqueados.size(); i++) {
+                        if (i == processosBloqueados.size() - 1) {
+                            processos += processosBloqueados.get(i);
+                        }else {
+                            processos += processosBloqueados.get(i) + ", ";
+                        }
+
+                    }
+                    utils.centralizaTelaHorizontal(8);
+                    System.out.println("Processos bloqueados: " + processos);
+
                 }
 
             } else {
@@ -143,54 +163,7 @@ public class Main {
             DB.cloneConection();
         }
     }
-
-
-//               limparConsole();
-//
-//        do {
-//            utils.exibirLogo();
-//            utils.exibirMensagem();
-//            utils.centralizaTelaHorizontal(22);
-//            System.out.println("Email:");
-//            utils.centralizaTelaHorizontal(22);
-//            String email = sc.next();
-//            System.out.println();
-//            utils.centralizaTelaHorizontal(22);
-//            System.out.println("Senha:");
-//            utils.centralizaTelaHorizontal(22);
-//            String senha = sc.next();
-//            if (emailValido.equals(email) && senhaValida.equals(senha)) {
-//                limparConsole();
-//                utils.exibirLogo();
-//                utils.centralizaTelaVertical(5);
-//                utils.centralizaTelaHorizontal(30);
-//                utils.exibirMenu();
-//                Thread.sleep(3000);
-//                limparConsole();
-//                utils.centralizaTelaVertical(1);
-//                utils.centralizaTelaHorizontal(60);
-//                System.out.println("""
-//
-//                                                  Monitoramento ativo!
-//
-//                        Este computador é monitorado em tempo real, incluindo o hardware, para
-//                        assegurar conformidade com as políticas da empresa.
-//                        Todas as atividades serão verificadas e, se necessário, medidas serão
-//                        tomadas automaticamente pelo sistema.""");
-//                break;
-//            } else {
-//                limparConsole();
-//                utils.centralizaTelaVertical(5);
-//                utils.centralizaTelaHorizontal(25);
-//                System.out.println("SENHA OU EMAIL INCORRETO!");
-//                Thread.sleep(4000);
-//                limparConsole();
-//            }
-//        } while (true);
-//
-//        FucionalidadeConsole.matarProcessos();
-//
-//    }
+    
 }
 
 

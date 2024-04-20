@@ -48,6 +48,18 @@ public class Utilitarios {
                 """);
     }
 
+    void mensagemInformativa(){
+
+        System.out.println("""
+                                               Monitoramento ativo!
+                        
+                        Este computador é monitorado em tempo real, incluindo o hardware, para
+                        assegurar conformidade com as políticas da empresa.
+                        Todas as atividades serão verificadas e, se necessário, medidas serão
+                        tomadas automaticamente pelo sistema.
+                """);
+    }
+
     void centralizaTelaHorizontal(Integer espaco) {
         for (int i = 0; i < espaco; i++) {
             System.out.print(" ");
