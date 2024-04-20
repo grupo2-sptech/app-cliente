@@ -121,18 +121,5 @@ public class FucionalidadeConsole {
         }
     }
 
-    public static void bloquearSite(String site) {
-        String hostsFilePath = System.getenv("SystemRoot") + "\\System32\\drivers\\etc\\hosts";
-        String linhaBloqueio = "127.0.0.1 " + site;
-        try (FileWriter fw = new FileWriter(hostsFilePath, true);
-             PrintWriter out = new PrintWriter(fw)) {
-            out.println(linhaBloqueio);
-            System.out.println("Site bloqueado com sucesso: " + site);
-        } catch (IOException e) {
-            System.err.println("Erro ao bloquear o site: " + e.getMessage());
-        }
-    }
-
-
 }
 

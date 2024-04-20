@@ -102,13 +102,17 @@ public class Main {
 
                 Looca janelaGroup = new Looca();
                 FucionalidadeConsole func = new FucionalidadeConsole();
+                System.out.println(janelaGroup.getGrupoDeJanelas().getJanelas());
+                System.out.println(processosBloqueados);
 
                 while (true) {
                     for (Janela janela : janelaGroup.getGrupoDeJanelas().getJanelas()) {
                         for (int i = 0; i < processosBloqueados.size(); i++) {
                             if (janela.getTitulo().contains(processosBloqueados.get(i))) {
                                 func.encerraProcesso(Math.toIntExact(janela.getPid()));
-                                System.out.println("Janela encerrada: " + janela.getTitulo() + " (PID: " + janela.getPid() + ")");
+                                System.out.println("Processo " + janela.getTitulo() + " foi encerrado por violar as políticas de segurança da empresa!");
+
+
                             }
                         }
 
@@ -125,8 +129,7 @@ public class Main {
                     System.out.println(st1);
 
 
-                    int linhasAfetadas1 = st1.executeUpdate();
-                    System.out.println("Linhas afetadas:" + linhasAfetadas1);
+                    st1.executeUpdate();
                     Thread.sleep(1000);
                 }
 
