@@ -6,6 +6,7 @@ import com.github.britooo.looca.api.group.janelas.Janela;
 import org.example.db.DB;
 
 
+import java.io.Console;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class Main {
         ResultSet rt = null;
         Boolean maquinaCadastrada = false;
         List<String> processosBloqueados = new ArrayList<>();
+        Console console = System.console();
 
         limparConsole();
         utils.exibirLogo();
@@ -48,7 +50,8 @@ public class Main {
             utils.centralizaTelaHorizontal(22);
             System.out.println("Senha:");
             utils.centralizaTelaHorizontal(22);
-            String senha = sc.next();
+            char[] passwordArray = console.readPassword();
+            String senha = new String(passwordArray);
 
             String query = """
                     SELECT funcionario_id, nome_funcionario, setor.setor_id from
@@ -211,18 +214,17 @@ public class Main {
                     st = conn.createStatement();
                     st.executeUpdate(sqlHistorico);
                     Thread.sleep(1000);
-                    String processos = "";
+                    StringBuilder processos = new StringBuilder();
 
                     limparConsole();
                     utils.mensagemInformativa();
 
                     for (int i = 0; i < processosBloqueados.size(); i++) {
                         if (i == processosBloqueados.size() - 1) {
-                            processos += processosBloqueados.get(i);
+                            processos.append(processosBloqueados.get(i));
                         } else {
-                            processos += processosBloqueados.get(i) + ", ";
+                            processos.append(processosBloqueados.get(i)).append(", ");
                         }
-
                     }
                     utils.centralizaTelaHorizontal(8);
                     System.out.println("Processos bloqueados: " + processos);
