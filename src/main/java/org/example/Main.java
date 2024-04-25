@@ -50,8 +50,10 @@ public class Main {
             utils.centralizaTelaHorizontal(22);
             System.out.println("Senha:");
             utils.centralizaTelaHorizontal(22);
-            char[] passwordArray = console.readPassword();
-            String senha = new String(passwordArray);
+            //char[] passwordArray = console.readPassword();
+            //String senha = new String(passwordArray);
+
+            String senha = sc.next();
 
             String query = """
                     SELECT funcionario_id, nome_funcionario, setor.setor_id from
@@ -177,8 +179,8 @@ public class Main {
                         st.executeUpdate(sqlDisco);
 
                         String sqlHistorico = """
-                                insert into historico_hardware (cpu_ocupada, ram_ocupada, fk_maquina, data_hora)
-                                values(%.2f, %.2f, %d, now());
+                                INSERT INTO historico_hardware (cpu_ocupada, ram_ocupada, fk_maquina, data_hora)
+                                VALUES (%.2f, %.2f, %d, NOW());
                                 """.formatted(Math.round(looca.getProcessador().getUso() * 100.0) / 100.0,
                                 Math.round((double) looca.getMemoria().getEmUso() / Math.pow(1024, 3) * 100.0) / 100.0,
                                 idMaquina);
