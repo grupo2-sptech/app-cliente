@@ -24,9 +24,6 @@ public class Main {
         limparConsole();
         Integer idMaquina = 0;
         utils.centralizaTelaHorizontal(22);
-
-        System.out.println(looca.getRede().getGrupoDeInterfaces().getInterfaces());
-
         Connection conn = null;
         Statement st = null;
         ResultSet rt = null;
