@@ -48,11 +48,13 @@ public class Main {
             utils.centralizaTelaHorizontal(22);
             System.out.println("Senha:");
             utils.centralizaTelaHorizontal(22);
-            //char[] passwordArray = console.readPassword();
-            //String senha = new String(passwordArray);
-
-            String senha = sc.next();
-
+            String senha;
+            if (console != null) {
+                char[] passwordArray = console.readPassword();
+                senha = new String(passwordArray);
+            } else {
+                senha = sc.next();
+            }
             String query = """
                     SELECT funcionario_id, nome_funcionario, setor.setor_id from
                     funcionario
