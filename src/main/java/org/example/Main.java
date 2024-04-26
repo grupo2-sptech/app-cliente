@@ -25,6 +25,7 @@ public class Main {
         Integer idMaquina = 0;
         utils.centralizaTelaHorizontal(22);
 
+        System.out.println(looca.getRede().getGrupoDeInterfaces().getInterfaces());
 
         Connection conn = null;
         Statement st = null;
