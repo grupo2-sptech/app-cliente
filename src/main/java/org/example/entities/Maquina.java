@@ -68,36 +68,39 @@ public class Maquina {
         List<String> listaBloqueio = new ArrayList<>();
 
 
-        maquina.setIdSetor(daoMaquina.validarMaquinaMysql(locca.getProcessador().getId()).getIdSetor());
+        if (daoMaquina.validarMaquinaSqlServer(locca.getProcessador().getId()) != null) {
 
-        if (daoMaquina.validarMaquinaMysql(locca.getProcessador().getId()) != null) {
+            maquina.setIdSetor(daoMaquina.validarMaquinaSqlServer(locca.getProcessador().getId()).getIdSetor());
+            maquina.setId(daoMaquina.validarMaquinaSqlServer(locca.getProcessador().getId()).getId());
+
+
+            Componente componenteRam = new Componente();
+            Componente componenteCpu = new Componente();
+
+            setComponentes(daoComponente.buscarComponenteSqlServer(maquina));
+            setComponentes(daoComponente.buscarComponenteMysql(maquina));
+
+            List<Componente> componentesDisco = new ArrayList<>();
+            for (int i = 0; i < listarComponentes().size(); i++) {
+                if (listarComponentes().get(i).getTipo().contains("Memória Ram")) {
+                    componenteRam = listarComponentes().get(i);
+                } else if (listarComponentes().get(i).getTipo().contains("Processador")) {
+                    componenteCpu = listarComponentes().get(i);
+                } else if (listarComponentes().get(i).getTipo().contains("Disco")) {
+                    componentesDisco.add(listarComponentes().get(i));
+                }
+            }
+
 
             while (true) {
-                fucionalidadeConsole.limparConsole();
-                Componente componenteRam = new Componente();
-                Componente componenteCpu = new Componente();
-
-                setComponentes(daoComponente.buscarComponenteMysql(maquina));
-
-                List<Componente> componentesDisco = new ArrayList<>();
-                for (int i = 0; i < listarComponentes().size(); i++) {
-                    if (listarComponentes().get(i).getTipo().contains("Memória Ram")) {
-                        componenteRam = listarComponentes().get(i);
-                    } else if (listarComponentes().get(i).getTipo().contains("Processador")) {
-                        componenteCpu = listarComponentes().get(i);
-                    } else if (listarComponentes().get(i).getTipo().contains("Disco")) {
-                        componentesDisco.add(listarComponentes().get(i));
-                    }
-                }
-
                 daoRegistro.inserirRegistroTempoReal(componenteRam);
                 daoRegistro.inserirRegistroTempoReal(componenteCpu);
                 for (Componente componenteVez : componentesDisco) {
                     daoRegistro.inserirRegistroTempoReal(componenteVez);
                 }
-
+                fucionalidadeConsole.limparConsole();
                 utilitarios.mensagemInformativa();
-                listaBloqueio = daoJanelasBloqueadas.buscarJanelasBloqueadasMysql(maquina.getIdSetor());
+                listaBloqueio = daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(maquina.getIdSetor());
                 janelasBloqueadas.monitorarJanelas(listaBloqueio);
                 Thread.sleep(1000);
             }
@@ -108,7 +111,7 @@ public class Maquina {
             utilitarios.centralizaTelaHorizontal(8);
             System.out.print("Insira o código aqui: ");
             Integer idCadastro = sc.nextInt();
-            if (daoMaquina.buscarSetorMaquina(idCadastro) == null) {
+            if (daoMaquina.buscarSetorMaquinaSqlServer(idCadastro) == null) {
                 utilitarios.codigoIncorreto();
             } else {
                 maquina.setId(idCadastro);
@@ -143,8 +146,11 @@ public class Maquina {
                             null
                     );
 
+                    Integer idComponenteDisco;
 
-                    int idComponenteDisco = daoComponente.cadastrarComponenteMysql(componenteDisco, idCadastro);
+                    idComponenteDisco = daoComponente.cadastrarComponenteSqlServer(componenteDisco, idCadastro);
+                    idComponenteDisco = daoComponente.cadastrarComponenteMysql(componenteDisco, idCadastro);
+
                     componenteDisco.setIdComponente(idComponenteDisco);
 
                     // Adiciona o componente ao mapa com a chave única
@@ -153,7 +159,13 @@ public class Maquina {
                     maquina.addComponente(componenteDisco);
                 }
 
+                daoMaquina.cadastrarMaquinaSqlServer(idCadastro, maquina);
                 daoMaquina.cadastrarMaquinaMysql(idCadastro, maquina);
+
+                maquina.setIdSetor(daoMaquina.validarMaquinaSqlServer(locca.getProcessador().getId()).getIdSetor());
+                maquina.setId(daoMaquina.validarMaquinaSqlServer(locca.getProcessador().getId()).getId());
+                componenteRam.setIdComponente(daoComponente.cadastrarComponenteSqlServer(componenteRam, idCadastro));
+                componenteCpu.setIdComponente(daoComponente.cadastrarComponenteSqlServer(componenteCpu, idCadastro));
                 componenteRam.setIdComponente(daoComponente.cadastrarComponenteMysql(componenteRam, idCadastro));
                 componenteCpu.setIdComponente(daoComponente.cadastrarComponenteMysql(componenteCpu, idCadastro));
 
@@ -163,15 +175,17 @@ public class Maquina {
                     for (Componente componente : maquina.listarComponentes()) {
                         daoRegistro.inserirRegistroTempoReal(componente);
                     }
-                    daoJanelasBloqueadas.buscarJanelasBloqueadasMysql(maquina.idSetor);
+                    daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(maquina.getIdSetor());
+                    daoJanelasBloqueadas.buscarJanelasBloqueadasMysql(maquina.getIdSetor());
                     utilitarios.mensagemInformativa();
-                    listaBloqueio = daoJanelasBloqueadas.buscarJanelasBloqueadasMysql(maquina.getIdSetor());
+                    listaBloqueio = daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(maquina.getIdSetor());
                     janelasBloqueadas.monitorarJanelas(listaBloqueio);
                     Thread.sleep(1000);
                 }
             }
         }
     }
+
 
     public List<Componente> listarComponentes() {
         return componentes;

@@ -7,7 +7,7 @@ public class Registro {
     private Double valorRegistro;
 
 
-    public Registro(int fkMaquina, ChronoLocalDateTime dataHora, Double valorRegistro) {
+    public Registro(int fkMaquina, Double valorRegistro) {
         this.idMaquina = fkMaquina;
         this.valorRegistro = valorRegistro;
     }

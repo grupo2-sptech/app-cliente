@@ -10,4 +10,9 @@ public interface DaoComponente {
     Integer cadastrarComponenteMysql(Componente componente, Integer idMaquina);
 
     List<Componente> buscarComponenteMysql(Maquina maquina);
+
+    Integer cadastrarComponenteSqlServer(Componente componente, Integer idMaquina);
+
+    List<Componente> buscarComponenteSqlServer(Maquina maquina);
+
 }

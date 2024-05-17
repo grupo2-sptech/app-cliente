@@ -1,4 +1,5 @@
 package org.example.dao.Implementation;
+
 import org.example.database.ConexaoMysql;
 import org.example.database.ConexaoSQLServer;
 import org.example.database.DatabaseExeption;
@@ -43,24 +44,28 @@ public class DaoUsuarioImple implements org.example.dao.DaoUsuario {
         Usuario usuario = new Usuario();
 
         conn = ConexaoSQLServer.getConection();
-        try {
-            st = conn.prepareStatement("""
-                            SELECT * FROM funcionario WHERE email_funcionario = ? AND senha_acesso = ? OR login_acesso = ? AND senha_acesso = ?;                    
-                    """);
-            st.setString(1, login);
-            st.setString(2, senha);
-            st.setString(3, login);
-            st.setString(4, senha);
-            st.executeQuery();
-            if (rs.next()) {
-                usuario.setNome(rs.getString("nome_funcionario"));
-                usuario.setEmail(rs.getString("email_funcionario"));
-            }
+        if (conn == null) {
+            System.exit(0);
+        } else {
+            try {
+                st = conn.prepareStatement("""
+                                SELECT * FROM funcionario WHERE email_funcionario = ? AND senha_acesso = ? OR login_acesso = ? AND senha_acesso = ?;                    
+                        """);
+                st.setString(1, login);
+                st.setString(2, senha);
+                st.setString(3, login);
+                st.setString(4, senha);
+                rs = st.executeQuery();
+                if (rs.next()) {
+                    usuario.setNome(rs.getString("nome_funcionario"));
+                    usuario.setEmail(rs.getString("email_funcionario"));
+                }
 
-        } catch (SQLException e) {
-            System.out.println("Erro ao validar usuario SQL SERVER: " + e.getMessage());
-        } finally {
-           // ConexaoSQLServer.closeStatementAndResultSet(st, rs, conn);
+            } catch (SQLException e) {
+                System.out.println("Erro ao validar usuario SQL SERVER: " + e.getMessage());
+            } finally {
+                // ConexaoSQLServer.closeStatementAndResultSet(st, rs, conn);
+            }
         }
         return usuario;
     }

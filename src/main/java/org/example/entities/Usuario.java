@@ -52,7 +52,7 @@ public class Usuario {
         DaoUsuarioImple daoUsuario = new DaoUsuarioImple();
 
         if (!login.equals(null) && !login.equals("") && !senha.equals(null) && !senha.equals("")) {
-            Usuario usuario = daoUsuario.validarUsuarioMysql(login, senha);
+            Usuario usuario = daoUsuario.validarUsuarioSql(login, senha);
             if (usuario.getNome() == null) {
                 return false;
             }
