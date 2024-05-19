@@ -8,19 +8,16 @@ import java.sql.SQLException;
 
 public class ConexaoSQLServer extends Conexao {
 
-    private static final String URL = "jdbc:sqlserver://3.90.84.113:1433;database=hardware_security";
+    private static final String URL = "jdbc:sqlserver://100.25.205.226:1433;database=hardware_security";
     private static final String USUARIO = "sa";
     private static final String SENHA = "urubu100";
 
     public static Connection getConection() {
 
         try {
-            if (conn == null ) {
-                conn = DriverManager.getConnection(URL, USUARIO, SENHA);
-                return conn;
-            }else{
-                return conn;
-            }
+            conn = null;
+            conn = DriverManager.getConnection(URL, USUARIO, SENHA);
+            return conn;
         } catch (SQLException e) {
             Utilitarios utilitarios = new Utilitarios();
             utilitarios.centralizaTelaVertical(2);

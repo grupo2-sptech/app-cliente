@@ -10,12 +10,11 @@ public class ConexaoMysql extends Conexao {
     private static final String SENHA = "123";
 
     public static Connection getConection() {
-        if (conn == null) {
+        conn = null;
             try {
                 conn = DriverManager.getConnection(URL, USUARIO, SENHA);
             } catch (SQLException e) {
                 throw new DatabaseExeption(e.getMessage());
-            }
         }
         return conn;
     }
