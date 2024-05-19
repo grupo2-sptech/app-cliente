@@ -22,11 +22,14 @@ public class DaoRegistroImple implements org.example.dao.DaoRegistro {
     Looca looca = new Looca();
     Registro registro = new Registro();
 
+
     public void inserirRegistroTempoReal(Componente componente) {
 
         Double usoComponente = 0.0;
         String comp = "";
-        Integer contartador = 1;
+
+        char contador = componente.getTipo().charAt(componente.getTipo().length() - 1);
+        int novoContador = contador - '0';
 
 
         if (componente.getTipo().contains("Processador")) {
@@ -35,8 +38,8 @@ public class DaoRegistroImple implements org.example.dao.DaoRegistro {
         } else if (componente.getTipo().contains("Memória Ram")) {
             usoComponente = registro.converterGB(looca.getMemoria().getEmUso());
             comp = "ram_ocupada";
-        } else if (componente.getTipo().contains("Disco " + contartador)) {
-            usoComponente = registro.converterGB(looca.getGrupoDeDiscos().getDiscos().get(contartador - 1).getEscritas());
+        } else if (componente.getTipo().contains("Disco " + novoContador)) {
+            usoComponente = registro.converterGB(looca.getGrupoDeDiscos().getDiscos().get(novoContador - 1).getEscritas());
             comp = "uso_disco";
         }
         try {
