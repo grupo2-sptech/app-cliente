@@ -1,5 +1,6 @@
 package org.example.dao.Implementation;
 
+import org.example.database.Conexao;
 import org.example.database.ConexaoMysql;
 import org.example.database.ConexaoSQLServer;
 import org.example.database.DatabaseExeption;
@@ -60,11 +61,10 @@ public class DaoUsuarioImple implements org.example.dao.DaoUsuario {
                     usuario.setNome(rs.getString("nome_funcionario"));
                     usuario.setEmail(rs.getString("email_funcionario"));
                 }
-
             } catch (SQLException e) {
                 System.out.println("Erro ao validar usuario SQL SERVER: " + e.getMessage());
             } finally {
-                // ConexaoSQLServer.closeStatementAndResultSet(st, rs, conn);
+              //  Conexao.closeStatementAndResultSet(st, rs, conn);
             }
         }
         return usuario;

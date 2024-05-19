@@ -68,5 +68,4 @@ public class DaoRegistroImple implements org.example.dao.DaoRegistro {
             System.out.println("Erro ao inserir registro no banco SQLServer: " + e.getMessage());
         }
     }
-
 }

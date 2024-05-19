@@ -2,23 +2,10 @@ package org.example.database;
 
 import java.sql.*;
 
-public class ConexaoMysql extends Conexao {
+public abstract class Conexao {
 
+    protected static Connection conn = null;
 
-    private static final String URL = "jdbc:mysql://localhost:3306/hardware_security";
-    private static final String USUARIO = "aluno1";
-    private static final String SENHA = "123";
-
-    public static Connection getConection() {
-        if (conn == null) {
-            try {
-                conn = DriverManager.getConnection(URL, USUARIO, SENHA);
-            } catch (SQLException e) {
-                throw new DatabaseExeption(e.getMessage());
-            }
-        }
-        return conn;
-    }
 
     public static void closeStatementAndResultSet(Statement st, ResultSet rt, Connection conn) {
         if (st != null) {

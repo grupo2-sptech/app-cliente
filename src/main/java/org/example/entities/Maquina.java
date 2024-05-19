@@ -185,8 +185,6 @@ public class Maquina {
             }
         }
     }
-
-
     public List<Componente> listarComponentes() {
         return componentes;
     }
