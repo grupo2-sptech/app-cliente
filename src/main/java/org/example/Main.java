@@ -39,6 +39,6 @@ public class Main {
                 break;
             }
         } while (true);
-        maquina.monitoramento(maquina);
+    maquina.monitoramento(maquina);
     }
 }
