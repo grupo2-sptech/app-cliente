@@ -29,7 +29,9 @@ public class Main {
         do {
             fucionalidadeConsole.limparConsole();
             utilitarios.exibirLogo();
-            if (!usuario.validarUsuario()) {
+            usuario = usuario.validarUsuario();
+
+            if (usuario == null) {
                 utilitarios.senhaIncorreta();
                 Thread.sleep(2000);
             } else {
@@ -39,6 +41,6 @@ public class Main {
                 break;
             }
         } while (true);
-        maquina.monitoramento(maquina);
+        maquina.monitoramento(maquina, usuario);
     }
 }

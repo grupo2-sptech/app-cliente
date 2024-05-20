@@ -4,7 +4,9 @@ import java.util.List;
 
 public interface DaoJanelasBloqueadas {
 
-    List<String> buscarJanelasBloqueadasMysql(Integer setor);
+    public List<String> buscarJanelasBloqueadasMysql(List<Integer> idCard);
 
-    List<String> buscarJanelasBloqueadasSqlServer(Integer setor);
+    public List<String> buscarJanelasBloqueadasSqlServer(List<Integer> idCard);
+
+    public List<Integer> buscarCadsAtivosNoSetorSql(Integer idSetor, Integer idEmpresa);
 }

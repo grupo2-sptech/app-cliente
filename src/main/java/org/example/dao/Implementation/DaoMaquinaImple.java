@@ -24,7 +24,7 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
             st.setString(1, idProcessador);
             rs = st.executeQuery();
             if (rs.next()) {
-                maquina.setId(rs.getInt("maquina_id"));
+                maquina.setId(rs.getInt("id_maquina"));
                 maquina.setIdPorcessador(rs.getString("processador_id"));
                 maquina.setSistemaOperacional(rs.getString("sistema_operacional"));
                 maquina.setMemorialTotal(rs.getDouble("memoria_total_maquina"));
@@ -53,12 +53,13 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
             st.setString(1, idProcessador);
             rs = st.executeQuery();
             if (rs.next()) {
-                maquina.setId(rs.getInt("maquina_id"));
+                maquina.setId(rs.getInt("id_maquina"));
                 maquina.setIdPorcessador(rs.getString("processador_id"));
                 maquina.setSistemaOperacional(rs.getString("sistema_operacional"));
                 maquina.setMemorialTotal(rs.getDouble("memoria_total_maquina"));
                 maquina.setArquitetura(rs.getInt("arquitetura"));
                 maquina.setIdSetor(rs.getInt("fk_setor"));
+                maquina.setIdEmpresa(rs.getInt("fk_empresa"));
             } else {
                 return null;
             }
@@ -77,7 +78,7 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
         connMysql = ConexaoMysql.getConection();
         try {
             st = connMysql.prepareStatement("""
-                    UPDATE maquina SET processador_id = ?, sistema_operacional = ?, memoria_total_maquina = ?, arquitetura = ? WHERE maquina_id = ?;
+                    UPDATE maquina SET processador_id = ?, sistema_operacional = ?, memoria_total_maquina = ?, arquitetura = ? WHERE id_maquina = ?;
                     """);
             st.setString(1, maquina.getIdPorcessador());
             st.setString(2, maquina.getSistemaOperacional());
@@ -99,7 +100,7 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
         conn = ConexaoSQLServer.getConection();
         try {
             st = conn.prepareStatement("""
-                    UPDATE maquina SET processador_id = ?, sistema_operacional = ?, memoria_total_maquina = ?, arquitetura = ? WHERE maquina_id = ?;
+                    UPDATE maquina SET processador_id = ?, sistema_operacional = ?, memoria_total_maquina = ?, arquitetura = ? WHERE id_maquina = ?;
                     """);
             st.setString(1, maquina.getIdPorcessador());
             st.setString(2, maquina.getSistemaOperacional());
@@ -124,7 +125,7 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
             fucionalidadeConsole.limparConsole();
         } else {
             try {
-                st = conn.prepareStatement("SELECT fk_setor FROM maquina WHERE maquina_id = ?;");
+                st = conn.prepareStatement("SELECT fk_setor FROM maquina WHERE id_maquina = ?;");
                 st.setInt(1, idMaquina);
                 rs = st.executeQuery();
                 if (rs.next()) {
@@ -145,7 +146,7 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
         ResultSet rs = null;
         conn = ConexaoSQLServer.getConection();
         try {
-            st = conn.prepareStatement("SELECT fk_setor FROM maquina WHERE maquina_id = ?;");
+            st = conn.prepareStatement("SELECT fk_setor FROM maquina WHERE id_maquina = ?;");
             st.setInt(1, idMaquina);
             rs = st.executeQuery();
             if (rs.next()) {

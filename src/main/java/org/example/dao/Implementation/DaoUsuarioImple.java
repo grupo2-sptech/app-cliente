@@ -33,6 +33,7 @@ public class DaoUsuarioImple implements org.example.dao.DaoUsuario {
             if (rs.next()) {
                 usuario.setNome(rs.getString("nome_funcionario"));
                 usuario.setEmail(rs.getString("email_funcionario"));
+                usuario.setIdEmpresa(rs.getInt("fk_empresa"));
             }
         } catch (SQLException e) {
             System.out.println("Erro ao Validar Usuario MYSQL: " + e.getMessage());
@@ -60,6 +61,7 @@ public class DaoUsuarioImple implements org.example.dao.DaoUsuario {
                 if (rs.next()) {
                     usuario.setNome(rs.getString("nome_funcionario"));
                     usuario.setEmail(rs.getString("email_funcionario"));
+                    usuario.setIdEmpresa(rs.getInt("fk_empresa"));
                 }
             } catch (SQLException e) {
                 System.out.println("Erro ao validar usuario SQL SERVER: " + e.getMessage());

@@ -60,6 +60,17 @@ public class Utilitarios {
                         |________________________________________________________________|
                          
                 """);
+    }    public void problemaConexao() {
+        System.out.println("""
+                           
+                        __________________________________________________________________
+                        |                           ATENÇÃO!                             |
+                        |                                                                |
+                        |  Erro ao conectar com o Servidor, verifique sua conexão com a  |
+                        |       internet ou entre em contato com o suporte técnico       |
+                        |________________________________________________________________|
+                         
+                """);
     }
 
     public void exibirMensagem() {

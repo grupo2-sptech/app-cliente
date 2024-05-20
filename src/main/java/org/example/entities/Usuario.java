@@ -12,17 +12,19 @@ public class Usuario {
     private String email;
     private String senha;
     private String login;
+    private Integer idEmpresa;
 
     Console console = System.console();
 
     public Usuario() {
     }
 
-    public Usuario(String nome, String email, String senha, String login) {
+    public Usuario(String nome, String email, String senha, String login, Integer idEmpresa) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
         this.login = login;
+        this.idEmpresa = idEmpresa;
     }
 
     public Usuario(String email, String senha, String login) {
@@ -31,7 +33,8 @@ public class Usuario {
         this.login = login;
     }
 
-    public Boolean validarUsuario() throws SQLException {
+    public Usuario validarUsuario() throws SQLException {
+        Usuario usuario = new Usuario();
         Scanner sc = new Scanner(System.in);
         Utilitarios utilitarios = new Utilitarios();
         utilitarios.centralizaTelaVertical(2);
@@ -52,12 +55,20 @@ public class Usuario {
         DaoUsuarioImple daoUsuario = new DaoUsuarioImple();
 
         if (!login.equals(null) && !login.equals("") && !senha.equals(null) && !senha.equals("")) {
-            Usuario usuario = daoUsuario.validarUsuarioSql(login, senha);
+            usuario = daoUsuario.validarUsuarioSql(login, senha);
             if (usuario.getNome() == null) {
-                return false;
+                return null;
             }
         }
-        return true;
+        return usuario;
+    }
+
+    public Integer getIdEmpresa() {
+        return idEmpresa;
+    }
+
+    public void setIdEmpresa(Integer idEmpresa) {
+        this.idEmpresa = idEmpresa;
     }
 
     public String getNome() {

@@ -5,6 +5,7 @@ import org.example.database.ConexaoMysql;
 import org.example.database.ConexaoSQLServer;
 import org.example.entities.Componente;
 import org.example.entities.component.Registro;
+import org.example.utilities.Utilitarios;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -58,10 +59,7 @@ public class DaoRegistroImple implements org.example.dao.DaoRegistro {
         try {
             st = null;
             connSql = ConexaoSQLServer.getConection();
-            if (connSql == null) {
-                System.out.println("        Erro ao conectar com o Servidor, verifique sua conexão com a\n" +
-                        "        internet ou entre em contato com o suporte técnico");
-            } else {
+            if (connSql != null) {
                 st = connSql.prepareStatement("INSERT INTO historico_hardware (" + comp + " , data_hora, fk_componente) VALUES (?, GETDATE(), ?);");
                 st.setDouble(1, usoComponente);
                 st.setInt(2, componente.getIdComponente());
