@@ -74,7 +74,7 @@ public class Maquina {
             maquina.setId(daoMaquina.validarMaquinaSqlServer(locca.getProcessador().getId()).getId());
 
             setComponentes(daoComponente.buscarComponenteSqlServer(maquina));
-            setComponentes(daoComponente.buscarComponenteMysql(maquina));
+           // setComponentes(daoComponente.buscarComponenteMysql(maquina));
 
             Thread registroThread = new Thread(() -> {
                 while (true) {
@@ -145,6 +145,7 @@ public class Maquina {
 
                     Integer idComponenteDisco;
                     idComponenteDisco = daoComponente.cadastrarComponenteSqlServer(componenteDisco, idCadastro);
+                    daoComponente.cadastrarComponenteMysql(componenteDisco, idCadastro);
                     componenteDisco.setIdComponente(idComponenteDisco);
                     componentesDisco.put("componenteDisco" + (i + 1), componenteDisco);
                     maquina.addComponente(componenteDisco);

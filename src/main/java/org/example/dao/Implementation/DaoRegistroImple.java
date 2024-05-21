@@ -45,8 +45,9 @@ public class DaoRegistroImple implements org.example.dao.DaoRegistro {
         }
         try {
             st = null;
-
-            connMysl = ConexaoMysql.getConection();
+            if(connMysl == null){
+                connMysl = ConexaoMysql.getConection();
+            }
             st = connMysl.prepareStatement("INSERT INTO historico_hardware (" + comp + ", data_hora, fk_componente) VALUES (?,now(),?);");
             st.setDouble(1, usoComponente);
             st.setInt(2, componente.getIdComponente());
@@ -58,7 +59,9 @@ public class DaoRegistroImple implements org.example.dao.DaoRegistro {
 
         try {
             st = null;
-            connSql = ConexaoSQLServer.getConection();
+            if(connSql == null){
+                connSql = ConexaoSQLServer.getConection();
+            }
             if (connSql != null) {
                 st = connSql.prepareStatement("INSERT INTO historico_hardware (" + comp + " , data_hora, fk_componente) VALUES (?, GETDATE(), ?);");
                 st.setDouble(1, usoComponente);
