@@ -73,24 +73,8 @@ public class Maquina {
             maquina.setIdSetor(daoMaquina.validarMaquinaSqlServer(locca.getProcessador().getId()).getIdSetor());
             maquina.setId(daoMaquina.validarMaquinaSqlServer(locca.getProcessador().getId()).getId());
 
-
-            Componente componenteRam = new Componente();
-            Componente componenteCpu = new Componente();
-
             setComponentes(daoComponente.buscarComponenteSqlServer(maquina));
             setComponentes(daoComponente.buscarComponenteMysql(maquina));
-
-            List<Componente> componentesDisco = new ArrayList<>();
-            for (int i = 0; i < listarComponentes().size(); i++) {
-                if (listarComponentes().get(i).getTipo().contains("Memória Ram")) {
-                    componenteRam = listarComponentes().get(i);
-                } else if (listarComponentes().get(i).getTipo().contains("Processador")) {
-                    componenteCpu = listarComponentes().get(i);
-                } else if (listarComponentes().get(i).getTipo().contains("Disco")) {
-                    componentesDisco.add(listarComponentes().get(i));
-                }
-            }
-
 
             Thread registroThread = new Thread(() -> {
                 while (true) {
@@ -112,11 +96,9 @@ public class Maquina {
                         janelasBloqueadas.monitorarJanelas(listaBloqueio);
                     }
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    System.out.println("Erro ao buscar janelas bloqueadas: " + e.getMessage());
                 }
             });
-
-            // Inicia as threads
             registroThread.start();
             monitoramentoThread.start();
 
@@ -162,17 +144,14 @@ public class Maquina {
                     );
 
                     Integer idComponenteDisco;
-
                     idComponenteDisco = daoComponente.cadastrarComponenteSqlServer(componenteDisco, idCadastro);
-                    idComponenteDisco = daoComponente.cadastrarComponenteMysql(componenteDisco, idCadastro);
-
                     componenteDisco.setIdComponente(idComponenteDisco);
-
-                    // Adiciona o componente ao mapa com a chave única
                     componentesDisco.put("componenteDisco" + (i + 1), componenteDisco);
-
                     maquina.addComponente(componenteDisco);
                 }
+
+                daoMaquina.cadastrarMaquinaSqlServer(idCadastro, maquina);
+                daoMaquina.cadastrarMaquinaMysql(idCadastro, maquina);
 
                 maquina.setIdSetor(daoMaquina.validarMaquinaSqlServer(locca.getProcessador().getId()).getIdSetor());
                 maquina.setId(daoMaquina.validarMaquinaSqlServer(locca.getProcessador().getId()).getId());
@@ -183,48 +162,31 @@ public class Maquina {
 
 
                 Thread registroThread = new Thread(() -> {
-                    try {
-                        while (true) {
-                            // Limpa o console
-                            fucionalidadeConsole.limparConsole();
 
-                            // Registra os componentes em tempo real
-                            List<Componente> componentes = maquina.listarComponentes();
-                            for (Componente componente : componentes) {
-                                daoRegistro.inserirRegistroTempoReal(componente);
-                            }
-                            Utilitarios utilitarios = new Utilitarios();
-                            utilitarios.mensagemInformativa();
-                            // Espera 1 segundo
-                            Thread.sleep(200);
+                    while (true) {
+                        fucionalidadeConsole.limparConsole();
+                        List<Componente> componentes = maquina.listarComponentes();
+                        for (Componente componente : componentes) {
+                            daoRegistro.inserirRegistroTempoReal(componente);
                         }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        Utilitarios utilitarios = new Utilitarios();
+                        utilitarios.mensagemInformativa();
                     }
                 });
 
                 Thread monitoramentoThread = new Thread(() -> {
                     List<String> listaBloqueio = new ArrayList<>();
-                    try {
-                        while (true) {
-                            // Busca e monitora janelas bloqueadas
-                            listaBloqueio = daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa()));
+                    while (true) {
+                        listaBloqueio = daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa()));
+                        try {
                             janelasBloqueadas.monitorarJanelas(listaBloqueio);
-
-                            // Espera 1 segundo
-                            Thread.sleep(200);
+                        } catch (InterruptedException e) {
+                            System.out.println("Erro ao monitorar janelas bloqueadas: " + e.getMessage());
                         }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
                     }
                 });
-
-                // Inicia as threads
                 registroThread.start();
                 monitoramentoThread.start();
-
-                registroThread.join();
-                monitoramentoThread.join();
             }
         }
     }

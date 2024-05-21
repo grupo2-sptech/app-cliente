@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 public class ConexaoSQLServer extends Conexao {
 
-    private static final String URL = "jdbc:sqlserver://100.24.238.45:1433;database=hardware_security2;encrypt=true;trustServerCertificate=true";
+    private static final String URL = "jdbc:sqlserver://52.91.184.68:1433;database=hardware_security2;encrypt=true;trustServerCertificate=true";
     private static final String USUARIO = "sa";
     private static final String SENHA = "urubu100";
 
