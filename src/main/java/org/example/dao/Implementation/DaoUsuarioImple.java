@@ -5,6 +5,7 @@ import org.example.database.ConexaoMysql;
 import org.example.database.ConexaoSQLServer;
 import org.example.database.DatabaseExeption;
 import org.example.entities.Usuario;
+import org.example.utilities.Slack;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -71,4 +72,35 @@ public class DaoUsuarioImple implements org.example.dao.DaoUsuario {
         }
         return usuario;
     }
+
+
+    public Slack getTokenSlack(Usuario usuario) throws DatabaseExeption, SQLException {
+
+        Slack slack = new Slack();
+
+        conn = ConexaoMysql.getConection();
+        if (conn == null) {
+            System.exit(0);
+        } else {
+            try {
+                st = conn.prepareStatement("""
+                           SELECT e.token_slack, e.canal_slack, e.web_url_slack
+                               FROM empresa as e where id_empresa = ?;                
+                    """);
+                st.setInt(1, usuario.getIdEmpresa());
+                rs = st.executeQuery();
+                if (rs.next()) {
+                    slack.setToken(rs.getString("token_slack"));
+                    slack.setCanal(rs.getString("canal_slack"));
+                    slack.setWebUrl(rs.getString("web_url_slack"));
+                }
+            } catch (SQLException e) {
+                System.out.println("Erro ao obter token slack: " + e.getMessage());
+            } finally {
+                //  Conexao.closeStatementAndResultSet(st, rs, conn);
+            }
+        }
+        return slack;
+    }
+
 }

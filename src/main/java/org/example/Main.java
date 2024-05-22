@@ -2,10 +2,13 @@ package org.example;
 
 import com.github.britooo.looca.api.core.Looca;
 import org.example.dao.DaoMaquina;
+import org.example.dao.DaoUsuario;
 import org.example.dao.Implementation.DaoMaquinaImple;
+import org.example.dao.Implementation.DaoUsuarioImple;
 import org.example.entities.Maquina;
 import org.example.entities.Usuario;
 import org.example.entities.component.Registro;
+import org.example.utilities.Slack;
 import org.example.utilities.Utilitarios;
 import org.example.utilities.console.FucionalidadeConsole;
 
@@ -19,6 +22,7 @@ public class Main {
         Usuario usuario = new Usuario();
         DaoMaquina daoMaquina = new DaoMaquinaImple();
         Looca looca = new Looca();
+        DaoUsuario daoUsuario = new DaoUsuarioImple();
         Maquina maquina = new Maquina(
                 null,
                 looca.getProcessador().getId(),
@@ -48,6 +52,10 @@ public class Main {
                 break;
             }
         }
+        Slack slack;
+        String mensagem = "Teste";
+        slack = daoUsuario.getTokenSlack(usuario);
+        slack.mensagemSlack(mensagem);
 
         if (daoMaquina.validarMaquinaSqlServer(maquina.getIdPorcessador()) == null) {
             maquina.cadastrarMaquina(maquina);
