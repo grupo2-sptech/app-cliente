@@ -26,21 +26,26 @@ public class Main {
                 looca.getSistema().getArquitetura()
         );
 
-        do {
-            fucionalidadeConsole.limparConsole();
-            utilitarios.exibirLogo();
-            usuario = usuario.validarUsuario();
 
+        fucionalidadeConsole.limparConsole();
+        utilitarios.exibirLogo();
+        usuario = usuario.validarUsuario();
+        while (true) {
             if (usuario == null) {
                 utilitarios.senhaIncorreta();
                 Thread.sleep(2000);
+                fucionalidadeConsole.limparConsole();
+                utilitarios.exibirLogo();
+                usuario = new Usuario();
+                usuario = usuario.validarUsuario();
             } else {
                 fucionalidadeConsole.limparConsole();
                 utilitarios.exibirBemVindo();
                 Thread.sleep(2000);
                 break;
             }
-        } while (true);
+        }
+        ;
         maquina.monitoramento(maquina, usuario);
     }
 }

@@ -45,7 +45,7 @@ public class DaoRegistroImple implements org.example.dao.DaoRegistro {
         }
         try {
             st = null;
-            if(connMysl == null){
+            if (connMysl == null) {
                 connMysl = ConexaoMysql.getConection();
             }
             st = connMysl.prepareStatement("INSERT INTO historico_hardware (" + comp + ", data_hora, fk_componente) VALUES (?,now(),?);");
@@ -55,21 +55,21 @@ public class DaoRegistroImple implements org.example.dao.DaoRegistro {
 
         } catch (SQLException e) {
             System.out.println("Erro ao inserir registro no banco mySql: " + e.getMessage());
+            connMysl = null;
         }
 
         try {
             st = null;
-            if(connSql == null){
+            if (connSql == null) {
                 connSql = ConexaoSQLServer.getConection();
             }
-            if (connSql != null) {
-                st = connSql.prepareStatement("INSERT INTO historico_hardware (" + comp + " , data_hora, fk_componente) VALUES (?, GETDATE(), ?);");
-                st.setDouble(1, usoComponente);
-                st.setInt(2, componente.getIdComponente());
-                st.executeUpdate();
-            }
+            st = connSql.prepareStatement("INSERT INTO historico_hardware (" + comp + " , data_hora, fk_componente) VALUES (?, GETDATE(), ?);");
+            st.setDouble(1, usoComponente);
+            st.setInt(2, componente.getIdComponente());
+            st.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Erro ao inserir registro no banco SQLServer: " + e.getMessage());
+            connSql = null;
         }
     }
 }

@@ -93,8 +93,8 @@ public class DaoComponenteImple implements org.example.dao.DaoComponente {
 
         try {
             conn = ConexaoMysql.getConection();
-            st = conn.prepareStatement("SELECT * FROM componente join maquina on id_maquina = fk_maquina WHERE processador_id = ?;");
-            st.setString(1, maquina.getIdPorcessador());
+            st = conn.prepareStatement("SELECT componente.* FROM componente join maquina on id_maquina = fk_maquina WHERE fk_maquina = ?;");
+            st.setInt(1, maquina.getId());
             rs = st.executeQuery();
             while (rs.next()) {
                 Componente componente = new Componente();
@@ -126,8 +126,8 @@ public class DaoComponenteImple implements org.example.dao.DaoComponente {
                 FucionalidadeConsole fucionalidadeConsole = new FucionalidadeConsole();
                 fucionalidadeConsole.limparConsole();
             } else {
-                st = conn.prepareStatement("SELECT * FROM componente join maquina on id_maquina = fk_maquina WHERE processador_id = ?;");
-                st.setString(1, maquina.getIdPorcessador());
+                st = conn.prepareStatement("SELECT componente.* FROM componente join maquina on id_maquina = fk_maquina WHERE fk_maquina = ?;");
+                st.setInt(1, maquina.getId());
                 rs = st.executeQuery();
                 while (rs.next()) {
                     Componente componente = new Componente();

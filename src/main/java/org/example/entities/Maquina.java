@@ -74,34 +74,22 @@ public class Maquina {
             maquina.setId(daoMaquina.validarMaquinaSqlServer(locca.getProcessador().getId()).getId());
 
             setComponentes(daoComponente.buscarComponenteSqlServer(maquina));
-           // setComponentes(daoComponente.buscarComponenteMysql(maquina));
 
-            Thread registroThread = new Thread(() -> {
-                while (true) {
-                    List<Componente> componentes = maquina.listarComponentes();
-                    for (Componente componente : componentes) {
-                        daoRegistro.inserirRegistroTempoReal(componente);
-                    }
+            List<String> listaBloqueio;
+            List<Componente> componentes = maquina.listarComponentes();
+
+            while (true) {
+
+                for (Componente componente : componentes) {
+                    daoRegistro.inserirRegistroTempoReal(componente);
                 }
-            });
 
-            Thread monitoramentoThread = new Thread(() -> {
-                List<String> listaBloqueio;
-                try {
-                    while (true) {
-                        fucionalidadeConsole.limparConsole();
-                        Utilitarios utilitarios = new Utilitarios();
-                        utilitarios.mensagemInformativa();
-                        listaBloqueio = daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa()));
-                        janelasBloqueadas.monitorarJanelas(listaBloqueio);
-                    }
-                } catch (InterruptedException e) {
-                    System.out.println("Erro ao buscar janelas bloqueadas: " + e.getMessage());
-                }
-            });
-            registroThread.start();
-            monitoramentoThread.start();
-
+                fucionalidadeConsole.limparConsole();
+                Utilitarios utilitarios = new Utilitarios();
+                utilitarios.mensagemInformativa();
+                listaBloqueio = daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa()));
+                janelasBloqueadas.monitorarJanelas(listaBloqueio);
+            }
         } else {
             utilitarios.centralizaTelaHorizontal(8);
             utilitarios.mensagemCadastroMaquina();
@@ -162,32 +150,20 @@ public class Maquina {
                 componenteCpu.setIdComponente(daoComponente.cadastrarComponenteMysql(componenteCpu, idCadastro));
 
 
-                Thread registroThread = new Thread(() -> {
+                List<String> listaBloqueio;
 
-                    while (true) {
-                        fucionalidadeConsole.limparConsole();
-                        List<Componente> componentes = maquina.listarComponentes();
-                        for (Componente componente : componentes) {
-                            daoRegistro.inserirRegistroTempoReal(componente);
-                        }
-                        Utilitarios utilitarios = new Utilitarios();
-                        utilitarios.mensagemInformativa();
-                    }
-                });
+                while (true) {
 
-                Thread monitoramentoThread = new Thread(() -> {
-                    List<String> listaBloqueio = new ArrayList<>();
-                    while (true) {
-                        listaBloqueio = daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa()));
-                        try {
-                            janelasBloqueadas.monitorarJanelas(listaBloqueio);
-                        } catch (InterruptedException e) {
-                            System.out.println("Erro ao monitorar janelas bloqueadas: " + e.getMessage());
-                        }
+                    for (Componente componente : componentes) {
+                        daoRegistro.inserirRegistroTempoReal(componente);
                     }
-                });
-                registroThread.start();
-                monitoramentoThread.start();
+
+                    fucionalidadeConsole.limparConsole();
+                    Utilitarios utilitarios = new Utilitarios();
+                    utilitarios.mensagemInformativa();
+                    listaBloqueio = daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa()));
+                    janelasBloqueadas.monitorarJanelas(listaBloqueio);
+                }
             }
         }
     }

@@ -13,17 +13,19 @@ import java.util.List;
 public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloqueadas {
 
     public List<String> buscarJanelasBloqueadasMysql(List<Integer> idCard) {
-        Connection conn = null;
+        Connection connBloqueio = null;
         ResultSet rs = null;
         PreparedStatement ps = null;
 
         JanelasBloqueadas janelasBloqueadas = new JanelasBloqueadas();
 
+        if (connBloqueio == null) {
+            connBloqueio = ConexaoMysql.getConection();
+        }
+
         for (Integer idCardVez : idCard) {
             try {
-                conn = ConexaoMysql.getConection();
-
-                ps = conn.prepareStatement("""
+                ps = connBloqueio.prepareStatement("""
                         SELECT p.titulo_processo
                         FROM processos_janelas AS p
                         JOIN card_tem_processo AS card ON p.id_processo = card.fk_processo_card
@@ -36,13 +38,14 @@ public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloq
                 }
             } catch (Exception e) {
                 System.out.println("Erro ao buscar janelas bloqueadas SQLSERVER: " + e.getMessage());
+                connBloqueio = null;
             }
         }
         return janelasBloqueadas.exibirLista();
     }
 
     public List<String> buscarJanelasBloqueadasSqlServer(List<Integer> idCard) {
-        Connection conn = null;
+        Connection connAtivo = null;
         ResultSet rs = null;
         PreparedStatement ps = null;
 
@@ -50,9 +53,10 @@ public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloq
 
         for (Integer idCardVez : idCard) {
             try {
-                conn = ConexaoSQLServer.getConection();
-
-                ps = conn.prepareStatement("""
+                if (connAtivo == null) {
+                    connAtivo = ConexaoSQLServer.getConection();
+                }
+                ps = connAtivo.prepareStatement("""
                         SELECT p.titulo_processo
                         FROM processos_janelas AS p
                         JOIN card_tem_processo AS card ON p.id_processo = card.fk_processo_card
@@ -65,6 +69,7 @@ public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloq
                 }
             } catch (Exception e) {
                 System.out.println("Erro ao buscar janelas bloqueadas SQLSERVER: " + e.getMessage());
+                connAtivo = null;
             }
         }
         return janelasBloqueadas.exibirLista();
@@ -87,7 +92,6 @@ public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloq
             ps.setInt(2, idSetor);
             rs = ps.executeQuery();
             while (rs.next()) {
-
                 idCards.add(rs.getInt("id_card"));
             }
         } catch (Exception e) {
