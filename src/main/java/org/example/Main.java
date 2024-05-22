@@ -1,6 +1,8 @@
 package org.example;
 
 import com.github.britooo.looca.api.core.Looca;
+import org.example.dao.DaoMaquina;
+import org.example.dao.Implementation.DaoMaquinaImple;
 import org.example.entities.Maquina;
 import org.example.entities.Usuario;
 import org.example.entities.component.Registro;
@@ -15,6 +17,7 @@ public class Main {
         Utilitarios utilitarios = new Utilitarios();
         FucionalidadeConsole fucionalidadeConsole = new FucionalidadeConsole();
         Usuario usuario = new Usuario();
+        DaoMaquina daoMaquina = new DaoMaquinaImple();
         Looca looca = new Looca();
         Maquina maquina = new Maquina(
                 null,
@@ -45,7 +48,11 @@ public class Main {
                 break;
             }
         }
-        ;
+
+        if (daoMaquina.validarMaquinaSqlServer(maquina.getIdPorcessador()) == null) {
+            maquina.cadastrarMaquina(maquina);
+        }
+
         maquina.monitoramento(maquina, usuario);
     }
 }

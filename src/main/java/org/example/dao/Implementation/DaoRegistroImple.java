@@ -4,6 +4,7 @@ import com.github.britooo.looca.api.core.Looca;
 import org.example.database.ConexaoMysql;
 import org.example.database.ConexaoSQLServer;
 import org.example.entities.Componente;
+import org.example.entities.Maquina;
 import org.example.entities.component.Registro;
 import org.example.utilities.Utilitarios;
 
@@ -24,37 +25,40 @@ public class DaoRegistroImple implements org.example.dao.DaoRegistro {
     Registro registro = new Registro();
 
 
-    public void inserirRegistroTempoReal(Componente componente) {
+    public void inserirRegistroTempoReal(Maquina maquina) {
 
-        Double usoComponente = 0.0;
         String comp = "";
+        Double usoCpu = Math.round(looca.getProcessador().getUso() * 100.0) / 100.0;
+        Double usoRam = registro.converterGB(looca.getMemoria().getEmUso());
 
-        char contador = componente.getTipo().charAt(componente.getTipo().length() - 1);
-        int novoContador = contador - '0';
 
-
-        if (componente.getTipo().contains("Processador")) {
-            usoComponente = Math.round(looca.getProcessador().getUso() * 100.0) / 100.0;
-            comp = "cpu_ocupada";
-        } else if (componente.getTipo().contains("Memória Ram")) {
-            usoComponente = registro.converterGB(looca.getMemoria().getEmUso());
-            comp = "ram_ocupada";
-        } else if (componente.getTipo().contains("Disco " + novoContador)) {
-            usoComponente = registro.converterGB(looca.getGrupoDeDiscos().getDiscos().get(novoContador - 1).getEscritas());
-            comp = "uso_disco";
-        }
         try {
             st = null;
             if (connMysl == null) {
                 connMysl = ConexaoMysql.getConection();
             }
-            st = connMysl.prepareStatement("INSERT INTO historico_hardware (" + comp + ", data_hora, fk_componente) VALUES (?,now(),?);");
-            st.setDouble(1, usoComponente);
-            st.setInt(2, componente.getIdComponente());
+            st = connMysl.prepareStatement("INSERT INTO historico_hardware (ram_ocupada, data_hora, fk_maquina) VALUES (?,now(),?);");
+            st.setDouble(1, usoRam);
+            st.setInt(2, maquina.getId());
             st.executeUpdate();
 
         } catch (SQLException e) {
-            System.out.println("Erro ao inserir registro no banco mySql: " + e.getMessage());
+            System.out.println("Erro ao inserir registro de RAM no banco mySql: " + e.getMessage());
+            connMysl = null;
+        }
+
+        try {
+            st = null;
+            if (connMysl == null) {
+                connMysl = ConexaoMysql.getConection();
+            }
+            st = connMysl.prepareStatement("INSERT INTO historico_hardware (cpu_ocupada, data_hora, fk_maquina) VALUES (?,now(),?);");
+            st.setDouble(1, usoCpu);
+            st.setInt(2, maquina.getId());
+            st.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao inserir registro de CPU no banco mySql: " + e.getMessage());
             connMysl = null;
         }
 
@@ -63,12 +67,27 @@ public class DaoRegistroImple implements org.example.dao.DaoRegistro {
             if (connSql == null) {
                 connSql = ConexaoSQLServer.getConection();
             }
-            st = connSql.prepareStatement("INSERT INTO historico_hardware (" + comp + " , data_hora, fk_componente) VALUES (?, GETDATE(), ?);");
-            st.setDouble(1, usoComponente);
-            st.setInt(2, componente.getIdComponente());
+            st = connSql.prepareStatement("INSERT INTO historico_hardware (ram_ocupada , data_hora, fk_componente) VALUES (?, GETDATE(), ?);");
+            st.setDouble(1, usoRam);
+            st.setInt(2, maquina.getId());
             st.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Erro ao inserir registro no banco SQLServer: " + e.getMessage());
+            System.out.println("Erro ao inserir registro de RAM no banco SQLServer: " + e.getMessage());
+            connSql = null;
+        }
+
+
+        try {
+            st = null;
+            if (connSql == null) {
+                connSql = ConexaoSQLServer.getConection();
+            }
+            st = connSql.prepareStatement("INSERT INTO historico_hardware (cpu_ocupada , data_hora, fk_componente) VALUES (?, GETDATE(), ?);");
+            st.setDouble(1, usoCpu);
+            st.setInt(2, maquina.getId());
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Erro ao inserir registro de CPU no banco SQLServer: " + e.getMessage());
             connSql = null;
         }
     }
