@@ -67,7 +67,7 @@ public class DaoRegistroImple implements org.example.dao.DaoRegistro {
             if (connSql == null) {
                 connSql = ConexaoSQLServer.getConection();
             }
-            st = connSql.prepareStatement("INSERT INTO historico_hardware (ram_ocupada , data_hora, fk_componente) VALUES (?, GETDATE(), ?);");
+            st = connSql.prepareStatement("INSERT INTO historico_hardware (ram_ocupada , data_hora, fk_maquina) VALUES (?, GETDATE(), ?);");
             st.setDouble(1, usoRam);
             st.setInt(2, maquina.getId());
             st.executeUpdate();
@@ -82,7 +82,7 @@ public class DaoRegistroImple implements org.example.dao.DaoRegistro {
             if (connSql == null) {
                 connSql = ConexaoSQLServer.getConection();
             }
-            st = connSql.prepareStatement("INSERT INTO historico_hardware (cpu_ocupada , data_hora, fk_componente) VALUES (?, GETDATE(), ?);");
+            st = connSql.prepareStatement("INSERT INTO historico_hardware (cpu_ocupada , data_hora, fk_maquina) VALUES (?, GETDATE(), ?);");
             st.setDouble(1, usoCpu);
             st.setInt(2, maquina.getId());
             st.executeUpdate();

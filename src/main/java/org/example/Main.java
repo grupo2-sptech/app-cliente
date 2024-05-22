@@ -52,7 +52,6 @@ public class Main {
         if (daoMaquina.validarMaquinaSqlServer(maquina.getIdPorcessador()) == null) {
             maquina.cadastrarMaquina(maquina);
         }
-
         maquina.monitoramento(maquina, usuario);
     }
 }
