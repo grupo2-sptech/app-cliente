@@ -18,8 +18,6 @@ public class Main {
     public static void main(String[] args) throws SQLException, InterruptedException {
 
 
-
-
         Registro registro = new Registro();
         Utilitarios utilitarios = new Utilitarios();
         FucionalidadeConsole fucionalidadeConsole = new FucionalidadeConsole();
@@ -27,16 +25,7 @@ public class Main {
         DaoMaquina daoMaquina = new DaoMaquinaImple();
         Looca looca = new Looca();
         DaoUsuario daoUsuario = new DaoUsuarioImple();
-        Maquina maquina = new Maquina(
-                null,
-                looca.getRede().getGrupoDeInterfaces().getInterfaces().get(1).getEnderecoMac(),
-                null,
-                null,
-                registro.converterGB(looca.getGrupoDeDiscos().getTamanhoTotal()),
-                looca.getSistema().getSistemaOperacional(),
-                looca.getSistema().getArquitetura()
-        );
-
+        Maquina maquina = new Maquina();
 
         fucionalidadeConsole.limparConsole();
         utilitarios.exibirLogo();
@@ -57,11 +46,11 @@ public class Main {
             }
         }
 
+        maquina = daoMaquina.validarMaquinaSqlServer(looca.getRede().getGrupoDeInterfaces().getInterfaces().get(1).getEnderecoMac(), usuario);
 
-        if (daoMaquina.validarMaquinaSqlServer(maquina.getIdPorcessador()) == null) {
+        if (maquina == null) {
             maquina.cadastrarMaquina(maquina);
         }
-
 
 
         maquina.monitoramento(maquina, usuario);

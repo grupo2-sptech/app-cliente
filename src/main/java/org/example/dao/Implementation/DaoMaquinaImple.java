@@ -3,6 +3,7 @@ package org.example.dao.Implementation;
 import org.example.database.ConexaoMysql;
 import org.example.database.ConexaoSQLServer;
 import org.example.entities.Maquina;
+import org.example.entities.Usuario;
 import org.example.utilities.console.FucionalidadeConsole;
 
 import java.sql.Connection;
@@ -41,7 +42,7 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
         return maquina;
     }
 
-    public Maquina validarMaquinaSqlServer(String idProcessador) throws SQLException {
+    public Maquina validarMaquinaSqlServer(String idProcessador, Usuario usuario) throws SQLException {
         Connection conn = null;
         PreparedStatement st = null;
         ResultSet rs = null;
@@ -49,8 +50,9 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
 
         Maquina maquina = new Maquina();
         try {
-            st = conn.prepareStatement("SELECT * FROM maquina WHERE processador_id = ?");
+            st = conn.prepareStatement("SELECT * FROM maquina WHERE processador_id = ? AND fk_empresa = ?;");
             st.setString(1, idProcessador);
+            st.setInt(2, usuario.getIdEmpresa());
             rs = st.executeQuery();
             if (rs.next()) {
                 maquina.setId(rs.getInt("id_maquina"));

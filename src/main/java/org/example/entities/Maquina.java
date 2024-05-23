@@ -58,24 +58,17 @@ public class Maquina {
     }
 
     public void monitoramento(Maquina maquina, Usuario usuario) throws SQLException, InterruptedException {
-        DaoMaquina daoMaquina = new DaoMaquinaImple();
         DaoComponente daoComponente = new DaoComponenteImple();
         DaoRegistro daoRegistro = new DaoRegistroImple();
         DaoJanelasBloqueadas daoJanelasBloqueadas = new DaoJanelasBloqueadasImple();
         FucionalidadeConsole fucionalidadeConsole = new FucionalidadeConsole();
         JanelasBloqueadas janelasBloqueadas = new JanelasBloqueadas();
 
-        maquina.setIdSetor(daoMaquina.validarMaquinaSqlServer(looca.getRede().getGrupoDeInterfaces().getInterfaces().get(1).getEnderecoMac()).getIdSetor());
-        maquina.setId(daoMaquina.validarMaquinaSqlServer(looca.getRede().getGrupoDeInterfaces().getInterfaces().get(1).getEnderecoMac()).getId());
-
         setComponentes(daoComponente.buscarComponenteSqlServer(maquina));
 
         Slack slack;
         slack = daoUsuario.getTokenSlack(usuario);
-
         List<String> listaBloqueio;
-        List<Componente> componentes = maquina.listarComponentes();
-
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -109,7 +102,6 @@ public class Maquina {
             janelasBloqueadas.monitorarJanelas(listaBloqueio);
         }
     }
-
 
     public void cadastrarMaquina(Maquina maquina) throws SQLException {
 
@@ -167,8 +159,6 @@ public class Maquina {
             daoMaquina.cadastrarMaquinaSqlServer(idCadastro, maquina);
             daoMaquina.cadastrarMaquinaMysql(idCadastro, maquina);
 
-            maquina.setIdSetor(daoMaquina.validarMaquinaSqlServer(locca.getRede().getGrupoDeInterfaces().getInterfaces().get(1).getEnderecoMac()).getIdSetor());
-            maquina.setId(daoMaquina.validarMaquinaSqlServer(locca.getRede().getGrupoDeInterfaces().getInterfaces().get(1).getEnderecoMac()).getId());
             componenteRam.setIdComponente(daoComponente.cadastrarComponenteSqlServer(componenteRam, idCadastro));
             componenteCpu.setIdComponente(daoComponente.cadastrarComponenteSqlServer(componenteCpu, idCadastro));
             componenteRam.setIdComponente(daoComponente.cadastrarComponenteMysql(componenteRam, idCadastro));

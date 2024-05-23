@@ -1,6 +1,7 @@
 package org.example.dao;
 
 import org.example.entities.Maquina;
+import org.example.entities.Usuario;
 
 import java.sql.SQLException;
 
@@ -16,6 +17,6 @@ public interface DaoMaquina {
 
     Integer buscarSetorMaquinaSqlServer(Integer idMaquina) throws SQLException;
 
-    Maquina validarMaquinaSqlServer(String idProcessador) throws SQLException;
+    Maquina validarMaquinaSqlServer(String idProcessador, Usuario usuario) throws SQLException;
 
 }
