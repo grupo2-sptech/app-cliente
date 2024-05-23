@@ -16,6 +16,10 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) throws SQLException, InterruptedException {
+
+
+
+
         Registro registro = new Registro();
         Utilitarios utilitarios = new Utilitarios();
         FucionalidadeConsole fucionalidadeConsole = new FucionalidadeConsole();
@@ -25,7 +29,7 @@ public class Main {
         DaoUsuario daoUsuario = new DaoUsuarioImple();
         Maquina maquina = new Maquina(
                 null,
-                looca.getProcessador().getId(),
+                looca.getRede().getGrupoDeInterfaces().getInterfaces().get(1).getEnderecoMac(),
                 null,
                 null,
                 registro.converterGB(looca.getGrupoDeDiscos().getTamanhoTotal()),
@@ -52,14 +56,14 @@ public class Main {
                 break;
             }
         }
-        Slack slack;
-        String mensagem = "Teste";
-        slack = daoUsuario.getTokenSlack(usuario);
-        slack.mensagemSlack(mensagem);
+
 
         if (daoMaquina.validarMaquinaSqlServer(maquina.getIdPorcessador()) == null) {
             maquina.cadastrarMaquina(maquina);
         }
+
+
+
         maquina.monitoramento(maquina, usuario);
     }
 }

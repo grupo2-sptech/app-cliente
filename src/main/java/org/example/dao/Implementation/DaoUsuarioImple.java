@@ -78,7 +78,7 @@ public class DaoUsuarioImple implements org.example.dao.DaoUsuario {
 
         Slack slack = new Slack();
 
-        conn = ConexaoMysql.getConection();
+        conn = ConexaoSQLServer.getConection();
         if (conn == null) {
             System.exit(0);
         } else {

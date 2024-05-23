@@ -1,15 +1,10 @@
 package org.example.entities;
 
 import com.github.britooo.looca.api.core.Looca;
-import org.example.dao.DaoComponente;
-import org.example.dao.DaoJanelasBloqueadas;
-import org.example.dao.DaoMaquina;
-import org.example.dao.DaoRegistro;
-import org.example.dao.Implementation.DaoComponenteImple;
-import org.example.dao.Implementation.DaoJanelasBloqueadasImple;
-import org.example.dao.Implementation.DaoMaquinaImple;
-import org.example.dao.Implementation.DaoRegistroImple;
+import org.example.dao.*;
+import org.example.dao.Implementation.*;
 import org.example.entities.component.Registro;
+import org.example.utilities.Slack;
 import org.example.utilities.Utilitarios;
 import org.example.utilities.console.FucionalidadeConsole;
 
@@ -35,6 +30,9 @@ public class Maquina {
     final Scanner sc = new Scanner(System.in);
     Registro registro = new Registro();
     Looca looca = new Looca();
+    DaoAlerta daoAlerta = new DaoAlertaimple();
+    DaoUsuario daoUsuario = new DaoUsuarioImple();
+    Timer timer = new Timer();
 
     public Double getMemorialTotal() {
         return memorialTotal;
@@ -67,55 +65,51 @@ public class Maquina {
         FucionalidadeConsole fucionalidadeConsole = new FucionalidadeConsole();
         JanelasBloqueadas janelasBloqueadas = new JanelasBloqueadas();
 
+        maquina.setIdSetor(daoMaquina.validarMaquinaSqlServer(looca.getRede().getGrupoDeInterfaces().getInterfaces().get(1).getEnderecoMac()).getIdSetor());
+        maquina.setId(daoMaquina.validarMaquinaSqlServer(looca.getRede().getGrupoDeInterfaces().getInterfaces().get(1).getEnderecoMac()).getId());
 
-        if (daoMaquina.validarMaquinaSqlServer(locca.getProcessador().getId()) != null) {
+        setComponentes(daoComponente.buscarComponenteSqlServer(maquina));
 
-            maquina.setIdSetor(daoMaquina.validarMaquinaSqlServer(locca.getProcessador().getId()).getIdSetor());
-            maquina.setId(daoMaquina.validarMaquinaSqlServer(locca.getProcessador().getId()).getId());
+        Slack slack;
+        slack = daoUsuario.getTokenSlack(usuario);
 
-            setComponentes(daoComponente.buscarComponenteSqlServer(maquina));
+        List<String> listaBloqueio;
+        List<Componente> componentes = maquina.listarComponentes();
 
-            List<String> listaBloqueio;
-            List<Componente> componentes = maquina.listarComponentes();
-
-            while (true) {
-
-                for (Componente componente : componentes) {
-                    daoRegistro.inserirRegistroTempoReal(maquina);
-                }
-
-                fucionalidadeConsole.limparConsole();
-                Utilitarios utilitarios = new Utilitarios();
-                utilitarios.mensagemInformativa();
-                listaBloqueio = daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa()));
-                janelasBloqueadas.monitorarJanelas(listaBloqueio);
-            }
-        } else {
-            utilitarios.centralizaTelaHorizontal(8);
-            utilitarios.mensagemCadastroMaquina();
-            utilitarios.centralizaTelaHorizontal(8);
-            System.out.print("Insira o código aqui: ");
-            Integer idCadastro = sc.nextInt();
-            if (daoMaquina.buscarSetorMaquinaSqlServer(idCadastro) == null) {
-                utilitarios.codigoIncorreto();
-            } else {
-                List<String> listaBloqueio;
-
-                while (true) {
-
-                    for (Componente componente : componentes) {
-                        daoRegistro.inserirRegistroTempoReal(maquina);
-                    }
-
-                    fucionalidadeConsole.limparConsole();
-                    Utilitarios utilitarios = new Utilitarios();
-                    utilitarios.mensagemInformativa();
-                    listaBloqueio = daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa()));
-                    janelasBloqueadas.monitorarJanelas(listaBloqueio);
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Double procentagerUsoRam = daoAlerta.buscarMediaUsoRam(maquina) / looca.getMemoria().getTotal() * 100;
+                if (procentagerUsoRam > 80.0) {
+                    daoAlerta.inserirAlertaRam(procentagerUsoRam, maquina);
+                    slack.mensagemSlack("Atenção! Uso de RAM acima de 80% por 10 minutos");
+                    slack.mensagemSlack("Média de Uso: %.2f".formatted(procentagerUsoRam));
                 }
             }
+        }, 10 * 60 * 1000, 10 * 60 * 1000);
+
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Double procentagerUsoCpu = daoAlerta.buscarMediaUsoCpu(maquina) * 2;
+                if (procentagerUsoCpu > 70.0) {
+                    daoAlerta.inserirAlertaCpu(procentagerUsoCpu, maquina);
+                    slack.mensagemSlack("Atenção! Uso de CPU acima de 70% por 5 minutos");
+                    slack.mensagemSlack("Média de Uso: %.2f".formatted(procentagerUsoCpu));
+                }
+            }
+        }, 5 * 60 * 1000, 5 * 60 * 1000);
+
+        while (true) {
+            daoRegistro.inserirRegistroTempoReal(maquina);
+            fucionalidadeConsole.limparConsole();
+            Utilitarios utilitarios = new Utilitarios();
+            utilitarios.mensagemInformativa();
+            listaBloqueio = daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa()));
+            janelasBloqueadas.monitorarJanelas(listaBloqueio);
         }
     }
+
 
     public void cadastrarMaquina(Maquina maquina) throws SQLException {
 
@@ -173,8 +167,8 @@ public class Maquina {
             daoMaquina.cadastrarMaquinaSqlServer(idCadastro, maquina);
             daoMaquina.cadastrarMaquinaMysql(idCadastro, maquina);
 
-            maquina.setIdSetor(daoMaquina.validarMaquinaSqlServer(locca.getProcessador().getId()).getIdSetor());
-            maquina.setId(daoMaquina.validarMaquinaSqlServer(locca.getProcessador().getId()).getId());
+            maquina.setIdSetor(daoMaquina.validarMaquinaSqlServer(locca.getRede().getGrupoDeInterfaces().getInterfaces().get(1).getEnderecoMac()).getIdSetor());
+            maquina.setId(daoMaquina.validarMaquinaSqlServer(locca.getRede().getGrupoDeInterfaces().getInterfaces().get(1).getEnderecoMac()).getId());
             componenteRam.setIdComponente(daoComponente.cadastrarComponenteSqlServer(componenteRam, idCadastro));
             componenteCpu.setIdComponente(daoComponente.cadastrarComponenteSqlServer(componenteCpu, idCadastro));
             componenteRam.setIdComponente(daoComponente.cadastrarComponenteMysql(componenteRam, idCadastro));
