@@ -25,7 +25,15 @@ public class Main {
         DaoMaquina daoMaquina = new DaoMaquinaImple();
         Looca looca = new Looca();
         DaoUsuario daoUsuario = new DaoUsuarioImple();
-        Maquina maquina = new Maquina();
+        Maquina maquina = new Maquina(
+                null,
+                looca.getRede().getGrupoDeInterfaces().getInterfaces().get(1).getEnderecoMac(),
+                null,
+                null,
+                registro.converterGB(looca.getMemoria().getTotal()),
+                looca.getSistema().getSistemaOperacional(),
+                looca.getSistema().getArquitetura()
+        );
 
         fucionalidadeConsole.limparConsole();
         utilitarios.exibirLogo();
@@ -45,14 +53,11 @@ public class Main {
                 break;
             }
         }
-
-        maquina = daoMaquina.validarMaquinaSqlServer(looca.getRede().getGrupoDeInterfaces().getInterfaces().get(1).getEnderecoMac(), usuario);
-
-        if (maquina == null) {
-            maquina.cadastrarMaquina(maquina);
+        if (daoMaquina.validarMaquinaSqlServer(maquina.getIdPorcessador(), usuario) == null) {
+            maquina.cadastrarMaquina(maquina, usuario);
         }
 
-
+        maquina = daoMaquina.validarMaquinaSqlServer(maquina.getIdPorcessador(), usuario);
         maquina.monitoramento(maquina, usuario);
     }
 }

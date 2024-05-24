@@ -79,7 +79,7 @@ public class Maquina {
                     slack.mensagemSlack("Média de Uso: %.2f".formatted(procentagerUsoRam));
                 }
             }
-        }, 10 * 60 * 1000, 10 * 60 * 1000);
+        }, 2 * 60 * 1000, 2 * 60 * 1000);
 
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -103,7 +103,7 @@ public class Maquina {
         }
     }
 
-    public void cadastrarMaquina(Maquina maquina) throws SQLException {
+    public void cadastrarMaquina(Maquina maquina, Usuario usuario) throws SQLException {
 
         DaoMaquina daoMaquina = new DaoMaquinaImple();
         DaoComponente daoComponente = new DaoComponenteImple();
@@ -158,6 +158,11 @@ public class Maquina {
 
             daoMaquina.cadastrarMaquinaSqlServer(idCadastro, maquina);
             daoMaquina.cadastrarMaquinaMysql(idCadastro, maquina);
+
+            maquina = daoMaquina.validarMaquinaSqlServer(maquina.getIdPorcessador(), usuario);
+
+            maquina.setIdSetor(maquina.getIdSetor());
+            maquina.setId(maquina.getId());
 
             componenteRam.setIdComponente(daoComponente.cadastrarComponenteSqlServer(componenteRam, idCadastro));
             componenteCpu.setIdComponente(daoComponente.cadastrarComponenteSqlServer(componenteCpu, idCadastro));
