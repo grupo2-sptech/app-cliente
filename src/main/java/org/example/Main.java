@@ -8,7 +8,6 @@ import org.example.dao.Implementation.DaoUsuarioImple;
 import org.example.entities.Maquina;
 import org.example.entities.Usuario;
 import org.example.entities.component.Registro;
-import org.example.utilities.Slack;
 import org.example.utilities.Utilitarios;
 import org.example.utilities.console.FucionalidadeConsole;
 
@@ -27,7 +26,7 @@ public class Main {
         DaoUsuario daoUsuario = new DaoUsuarioImple();
         Maquina maquina = new Maquina(
                 null,
-                looca.getRede().getGrupoDeInterfaces().getInterfaces().get(1).getEnderecoMac(),
+                looca.getRede().getGrupoDeInterfaces().getInterfaces().get(4).getEnderecoMac(),
                 null,
                 null,
                 registro.converterGB(looca.getMemoria().getTotal()),
