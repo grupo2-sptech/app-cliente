@@ -26,13 +26,14 @@ public class Main {
         DaoUsuario daoUsuario = new DaoUsuarioImple();
         Maquina maquina = new Maquina(
                 null,
-                looca.getRede().getGrupoDeInterfaces().getInterfaces().get(4).getEnderecoMac(),
+                looca.getProcessador().getId(),
                 null,
                 null,
                 registro.converterGB(looca.getMemoria().getTotal()),
                 looca.getSistema().getSistemaOperacional(),
                 looca.getSistema().getArquitetura()
         );
+
 
         fucionalidadeConsole.limparConsole();
         utilitarios.exibirLogo();
