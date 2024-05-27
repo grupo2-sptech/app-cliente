@@ -5,6 +5,7 @@ import org.example.database.ConexaoMysql;
 import org.example.database.ConexaoSQLServer;
 import org.example.entities.Componente;
 import org.example.entities.Maquina;
+import org.example.entities.Usuario;
 import org.example.entities.component.Registro;
 import org.example.utilities.Utilitarios;
 
@@ -17,6 +18,7 @@ public class DaoRegistroImple implements org.example.dao.DaoRegistro {
 
     private Connection connMysl = null;
     private Connection connSql = null;
+    private Connection conn = null;
     private PreparedStatement st = null;
     private ResultSet rs = null;
 
@@ -89,6 +91,20 @@ public class DaoRegistroImple implements org.example.dao.DaoRegistro {
         } catch (SQLException e) {
             System.out.println("Erro ao inserir registro de CPU no banco SQLServer: " + e.getMessage());
             connSql = null;
+        }
+    }
+
+    public void registroEntrada(Usuario usuario, Maquina maquina) {
+        conn = ConexaoSQLServer.getConection();
+        try {
+            st = conn.prepareStatement("""
+                    INSERT INTO uso_maquina (fk_funcionario, fk_maquina, hora_data_entrada) VALUES (?, ?, GETDATE());
+                    """);
+            st.setInt(1, usuario.getId());
+            st.setInt(2, maquina.getId());
+            st.execute();
+        } catch (SQLException e) {
+            System.out.println("Erro ao registrar entrada: " + e.getMessage());
         }
     }
 }

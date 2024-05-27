@@ -12,4 +12,6 @@ public interface DaoAlerta {
     Double buscarMediaUsoCpu(Maquina maquina);
 
     void inserirAlertaCpu(Double usoCpu, Maquina maquina);
+
+
 }

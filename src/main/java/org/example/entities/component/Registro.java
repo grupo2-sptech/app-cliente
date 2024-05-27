@@ -1,5 +1,13 @@
 package org.example.entities.component;
 
+import org.example.dao.DaoRegistro;
+import org.example.dao.DaoUsuario;
+import org.example.dao.Implementation.DaoRegistroImple;
+import org.example.dao.Implementation.DaoUsuarioImple;
+import org.example.entities.Maquina;
+import org.example.entities.Usuario;
+
+import java.sql.SQLException;
 import java.time.chrono.ChronoLocalDateTime;
 
 public class Registro {
@@ -18,6 +26,11 @@ public class Registro {
     public Double converterGB(Long numero) {
         Double numeroConvertido = Math.round(numero / (1024.0 * 1024.0 * 1024.0) * 100.0) / 100.0;
         return numeroConvertido;
+    }
+
+    public void entradaUser(Usuario usuario, Maquina maquina) throws SQLException {
+        DaoRegistro daoRegistro = new DaoRegistroImple();
+        daoRegistro.registroEntrada(usuario, maquina);
     }
 
     public Double getValorRegistro() {
@@ -45,7 +58,6 @@ public class Registro {
                 }
                 """.formatted(idMaquina, valorRegistro);
     }
-
 
 
 }

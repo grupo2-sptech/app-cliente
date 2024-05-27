@@ -2,6 +2,10 @@ package org.example.entities;
 
 import com.github.britooo.looca.api.core.Looca;
 import com.github.britooo.looca.api.group.janelas.Janela;
+import org.example.dao.DaoAlerta;
+import org.example.dao.DaoJanelasBloqueadas;
+import org.example.dao.Implementation.DaoAlertaimple;
+import org.example.dao.Implementation.DaoJanelasBloqueadasImple;
 import org.example.utilities.Utilitarios;
 import org.example.utilities.console.FucionalidadeConsole;
 
@@ -11,6 +15,14 @@ import java.util.List;
 public class JanelasBloqueadas {
 
     private List<String> listaJanelasBloqueadas;
+    private Integer categoria;
+    private String nome;
+
+    public JanelasBloqueadas(Integer categoria, String nome) {
+        this.categoria = categoria;
+        this.nome = nome;
+    }
+
 
     Looca janelaGroup = new Looca();
     FucionalidadeConsole func = new FucionalidadeConsole();
@@ -20,18 +32,26 @@ public class JanelasBloqueadas {
         listaJanelasBloqueadas = new ArrayList<>();
     }
 
-    public void monitorarJanelas(List<String> listaJanelasBloqueadas) throws InterruptedException {
+    public void monitorarJanelas(List<JanelasBloqueadas> listaJanelasBloqueadas, Maquina maquina) throws InterruptedException {
+        DaoJanelasBloqueadas daoJanelasBloqueadas = new DaoJanelasBloqueadasImple();
         for (Janela janela : janelaGroup.getGrupoDeJanelas().getJanelas()) {
             for (int i = 0; i < listaJanelasBloqueadas.size(); i++) {
-                if (janela.getTitulo().contains(listaJanelasBloqueadas.get(i))) {
+                if (janela.getTitulo().contains(listaJanelasBloqueadas.get(i).getNome())) {
                     func.encerraProcesso(Math.toIntExact(janela.getPid()));
                     utilitarios.centralizaTelaVertical(1);
                     utilitarios.centralizaTelaHorizontal(8);
+                    monitoraBloqueio(listaJanelasBloqueadas.get(i).getCategoria(), maquina);
+                    daoJanelasBloqueadas.alertaBloqueio(maquina, janela.getTitulo());
                     System.out.println("Processo " + janela.getTitulo() + " foi encerrado por violar as políticas de segurança da empresa!");
                     Thread.sleep(3000);
                 }
             }
         }
+    }
+
+    public void monitoraBloqueio(Integer categoria, Maquina maquina) {
+        DaoJanelasBloqueadas daoJanelasBloqueadas = new DaoJanelasBloqueadasImple();
+        daoJanelasBloqueadas.inserirDadosBloqueio(maquina, categoria);
     }
 
     public void addBloqueioNaLista(String nome) {
@@ -44,6 +64,22 @@ public class JanelasBloqueadas {
 
     public void setNome(List<String> nome) {
         this.listaJanelasBloqueadas = nome;
+    }
+
+    public Integer getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Integer categoria) {
+        this.categoria = categoria;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     @Override

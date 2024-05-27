@@ -73,33 +73,34 @@ public class Maquina {
             @Override
             public void run() {
                 Double procentagerUsoRam = daoAlerta.buscarMediaUsoRam(maquina) / looca.getMemoria().getTotal() * 100;
-                if (procentagerUsoRam > 80.0) {
+                if (procentagerUsoRam > 8) {
                     daoAlerta.inserirAlertaRam(procentagerUsoRam, maquina);
                     slack.mensagemSlack("Atenção! Uso de RAM acima de 80% por 10 minutos");
                     slack.mensagemSlack("Média de Uso: %.2f".formatted(procentagerUsoRam));
                 }
             }
-        }, 2 * 60 * 1000, 2 * 60 * 1000);
+        }, 1 * 60 * 1000, 1 * 60 * 1000);
 
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 Double procentagerUsoCpu = daoAlerta.buscarMediaUsoCpu(maquina) * 2;
-                if (procentagerUsoCpu > 70.0) {
+                if (true) {
                     daoAlerta.inserirAlertaCpu(procentagerUsoCpu, maquina);
                     slack.mensagemSlack("Atenção! Uso de CPU acima de 70% por 5 minutos");
                     slack.mensagemSlack("Média de Uso: %.2f".formatted(procentagerUsoCpu));
                 }
             }
-        }, 5 * 60 * 1000, 5 * 60 * 1000);
+        }, 1 * 60 * 1000, 1 * 60 * 1000);
+
 
         while (true) {
             daoRegistro.inserirRegistroTempoReal(maquina);
             fucionalidadeConsole.limparConsole();
             Utilitarios utilitarios = new Utilitarios();
             utilitarios.mensagemInformativa();
-            listaBloqueio = daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa()));
-            janelasBloqueadas.monitorarJanelas(listaBloqueio);
+            janelasBloqueadas.monitorarJanelas(daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa())), maquina);
+            Thread.sleep(1000);
         }
     }
 
@@ -107,7 +108,6 @@ public class Maquina {
 
         DaoMaquina daoMaquina = new DaoMaquinaImple();
         DaoComponente daoComponente = new DaoComponenteImple();
-
         utilitarios.centralizaTelaHorizontal(8);
         utilitarios.mensagemCadastroMaquina();
         utilitarios.centralizaTelaHorizontal(8);

@@ -3,6 +3,8 @@ package org.example.dao.Implementation;
 import org.example.database.ConexaoMysql;
 import org.example.database.ConexaoSQLServer;
 import org.example.entities.JanelasBloqueadas;
+import org.example.entities.Maquina;
+import org.example.entities.Usuario;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -44,12 +46,12 @@ public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloq
         return janelasBloqueadas.exibirLista();
     }
 
-    public List<String> buscarJanelasBloqueadasSqlServer(List<Integer> idCard) {
+    public List<JanelasBloqueadas> buscarJanelasBloqueadasSqlServer(List<Integer> idCard) {
         Connection connAtivo = null;
         ResultSet rs = null;
         PreparedStatement ps = null;
 
-        JanelasBloqueadas janelasBloqueadas = new JanelasBloqueadas();
+        List<JanelasBloqueadas> listaJanelasBloqueadas = new ArrayList<>();
 
         for (Integer idCardVez : idCard) {
             try {
@@ -57,7 +59,7 @@ public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloq
                     connAtivo = ConexaoSQLServer.getConection();
                 }
                 ps = connAtivo.prepareStatement("""
-                        SELECT p.titulo_processo
+                        SELECT p.titulo_processo, fk_card
                         FROM processos_janelas AS p
                         JOIN card_tem_processo AS card ON p.id_processo = card.fk_processo_card
                         WHERE card.ativo = 1 AND card.fk_card = ?;
@@ -65,14 +67,17 @@ public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloq
                 ps.setInt(1, idCardVez);
                 rs = ps.executeQuery();
                 while (rs.next()) {
-                    janelasBloqueadas.addBloqueioNaLista(rs.getString("titulo_processo"));
+                    JanelasBloqueadas janelasBloqueadas = new JanelasBloqueadas();
+                    janelasBloqueadas.setNome(rs.getString("titulo_processo"));
+                    janelasBloqueadas.setCategoria(rs.getInt("fk_card"));
+                    listaJanelasBloqueadas.add(janelasBloqueadas);
                 }
             } catch (Exception e) {
                 System.out.println("Erro ao buscar janelas bloqueadas SQLSERVER: " + e.getMessage());
                 connAtivo = null;
             }
         }
-        return janelasBloqueadas.exibirLista();
+        return listaJanelasBloqueadas;
     }
 
     public List<Integer> buscarCadsAtivosNoSetorSql(Integer idSetor, Integer idEmpresa) {
@@ -98,5 +103,43 @@ public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloq
             System.out.println("Erro ao buscar janelas bloqueadas SQLSERVER: " + e.getMessage());
         }
         return idCards;
+    }
+
+    public void inserirDadosBloqueio(Maquina maquina, Integer categoria) {
+        Connection conn;
+        PreparedStatement ps;
+        ResultSet rt;
+
+        try {
+            conn = ConexaoSQLServer.getConection();
+            ps = conn.prepareStatement("""
+                    insert into historico_bloqueios (fk_empresa, fk_categoria, fk_setor) values (?,?,?);                                                                                                            
+                    """);
+            ps.setInt(1, maquina.getIdEmpresa());
+            ps.setInt(2, categoria);
+            ps.setInt(3, maquina.getIdSetor());
+
+            ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Erro ao inserir o hitorico" + e.getMessage());
+        }
+    }
+
+    public void alertaBloqueio(Maquina maquina, String nomeProcesso) {
+        Connection conn;
+        PreparedStatement ps;
+        ResultSet rt;
+        String descricaoAlerta = "Atenção a " + maquina + " tentou acessar o processo " + nomeProcesso;
+        try {
+            conn = ConexaoSQLServer.getConection();
+            ps = conn.prepareStatement("""
+                    INSERT INTO alerta (fk_maquina, descricao_alerta)
+                                        VALUES (?, ?);                    """);
+            ps.setInt(1, maquina.getId());
+            ps.setString(2, descricaoAlerta);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Erro ao inserir o hitorico" + e.getMessage());
+        }
     }
 }

@@ -97,7 +97,6 @@ public class DaoAlertaimple implements org.example.dao.DaoAlerta {
     public void inserirAlertaCpu(Double usoCpu, Maquina maquina) {
         Connection conn = null;
         PreparedStatement st = null;
-
         try {
             if (conn == null) {
                 conn = ConexaoSQLServer.getConection();

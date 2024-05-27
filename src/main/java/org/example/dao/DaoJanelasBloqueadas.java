@@ -1,12 +1,19 @@
 package org.example.dao;
 
+import org.example.entities.JanelasBloqueadas;
+import org.example.entities.Maquina;
+
 import java.util.List;
 
 public interface DaoJanelasBloqueadas {
 
-    public List<String> buscarJanelasBloqueadasMysql(List<Integer> idCard);
+    List<String> buscarJanelasBloqueadasMysql(List<Integer> idCard);
 
-    public List<String> buscarJanelasBloqueadasSqlServer(List<Integer> idCard);
+    List<JanelasBloqueadas> buscarJanelasBloqueadasSqlServer(List<Integer> idCard);
 
-    public List<Integer> buscarCadsAtivosNoSetorSql(Integer idSetor, Integer idEmpresa);
+    List<Integer>buscarCadsAtivosNoSetorSql(Integer idSetor, Integer idEmpresa);
+
+    void inserirDadosBloqueio(Maquina maquina, Integer categoria);
+
+    void alertaBloqueio(Maquina maquina, String nomeProcesso);
 }

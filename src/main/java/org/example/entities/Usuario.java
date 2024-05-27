@@ -1,5 +1,6 @@
 package org.example.entities;
 
+import org.example.dao.DaoUsuario;
 import org.example.dao.Implementation.DaoUsuarioImple;
 import org.example.utilities.Utilitarios;
 
@@ -8,6 +9,7 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Usuario {
+    private Integer id;
     private String nome;
     private String email;
     private String senha;
@@ -53,7 +55,6 @@ public class Usuario {
         }
 
         DaoUsuarioImple daoUsuario = new DaoUsuarioImple();
-
         if (!login.equals(null) && !login.equals("") && !senha.equals(null) && !senha.equals("")) {
             usuario = daoUsuario.validarUsuarioSql(login, senha);
             if (usuario.getNome() == null) {
@@ -69,6 +70,14 @@ public class Usuario {
 
     public void setIdEmpresa(Integer idEmpresa) {
         this.idEmpresa = idEmpresa;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getNome() {
