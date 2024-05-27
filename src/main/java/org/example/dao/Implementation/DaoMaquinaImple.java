@@ -112,6 +112,7 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
             st.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Erro ao cadastrar maquina: " + e.getMessage());
+
         } finally {
             //  ConexaoMysql.closeStatementAndResultSet(st, rs, conn);
         }
@@ -127,7 +128,7 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
             fucionalidadeConsole.limparConsole();
         } else {
             try {
-                st = conn.prepareStatement("SELECT fk_setor FROM maquina WHERE id_maquina = ?;");
+                st = conn.prepareStatement("SELECT fk_setor FROM maquina  WHERE id_maquina = ?;");
                 st.setInt(1, idMaquina);
                 rs = st.executeQuery();
                 if (rs.next()) {
