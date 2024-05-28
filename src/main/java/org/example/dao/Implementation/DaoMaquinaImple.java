@@ -42,26 +42,28 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
         return maquina;
     }
 
-    public Maquina validarMaquinaSqlServer(String idProcessador, Usuario usuario) throws SQLException {
+    public Maquina validarMaquinaSqlServer(Maquina maquina, Usuario usuario) throws SQLException {
         Connection conn = null;
         PreparedStatement st = null;
         ResultSet rs = null;
         conn = ConexaoSQLServer.getConection();
 
-        Maquina maquina = new Maquina();
+        Maquina maquinaReturn = new Maquina();
         try {
-            st = conn.prepareStatement("SELECT * FROM maquina WHERE processador_id = ? AND fk_empresa = ?;");
-            st.setString(1, idProcessador);
+            st = conn.prepareStatement("SELECT * FROM maquina WHERE processador_id = ? AND fk_empresa = ? AND num_mac = ?;");
+            st.setString(1, maquina.getIdPorcessador());
             st.setInt(2, usuario.getIdEmpresa());
+            st.setString(3, maquina.getMac());
             rs = st.executeQuery();
             if (rs.next()) {
-                maquina.setId(rs.getInt("id_maquina"));
-                maquina.setIdPorcessador(rs.getString("processador_id"));
-                maquina.setSistemaOperacional(rs.getString("sistema_operacional"));
-                maquina.setMemorialTotal(rs.getDouble("memoria_total_maquina"));
-                maquina.setArquitetura(rs.getInt("arquitetura"));
-                maquina.setIdSetor(rs.getInt("fk_setor"));
-                maquina.setIdEmpresa(rs.getInt("fk_empresa"));
+                maquinaReturn.setId(rs.getInt("id_maquina"));
+                maquinaReturn.setIdPorcessador(rs.getString("processador_id"));
+                maquinaReturn.setMac(rs.getString("num_mac"));
+                maquinaReturn.setSistemaOperacional(rs.getString("sistema_operacional"));
+                maquinaReturn.setMemorialTotal(rs.getDouble("memoria_total_maquina"));
+                maquinaReturn.setArquitetura(rs.getInt("arquitetura"));
+                maquinaReturn.setIdSetor(rs.getInt("fk_setor"));
+                maquinaReturn.setIdEmpresa(rs.getInt("fk_empresa"));
             } else {
                 return null;
             }
@@ -70,7 +72,7 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
         } finally {
             // ConexaoMysql.closeStatementAndResultSet(st, rs, conn);
         }
-        return maquina;
+        return maquinaReturn;
     }
 
     public void cadastrarMaquinaMysql(Integer id_cadastro, Maquina maquina) throws SQLException {
@@ -102,13 +104,14 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
         conn = ConexaoSQLServer.getConection();
         try {
             st = conn.prepareStatement("""
-                    UPDATE maquina SET processador_id = ?, sistema_operacional = ?, memoria_total_maquina = ?, arquitetura = ? WHERE id_maquina = ?;
+                    UPDATE maquina SET processador_id = ?, num_mac = ?, sistema_operacional = ?, memoria_total_maquina = ?, arquitetura = ? WHERE id_maquina = ?;
                     """);
             st.setString(1, maquina.getIdPorcessador());
-            st.setString(2, maquina.getSistemaOperacional());
-            st.setDouble(3, maquina.getMemorialTotal());
-            st.setInt(4, maquina.getArquitetura());
-            st.setInt(5, id_cadastro);
+            st.setString(2, maquina.getMac());
+            st.setString(3, maquina.getSistemaOperacional());
+            st.setDouble(4, maquina.getMemorialTotal());
+            st.setInt(5, maquina.getArquitetura());
+            st.setInt(6, id_cadastro);
             st.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Erro ao cadastrar maquina: " + e.getMessage());

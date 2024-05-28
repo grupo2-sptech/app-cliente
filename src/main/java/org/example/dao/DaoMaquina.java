@@ -17,6 +17,6 @@ public interface DaoMaquina {
 
     Integer buscarSetorMaquinaSqlServer(Integer idMaquina) throws SQLException;
 
-    Maquina validarMaquinaSqlServer(String idProcessador, Usuario usuario) throws SQLException;
+    Maquina validarMaquinaSqlServer(Maquina maquina, Usuario usuario) throws SQLException;
 
 }

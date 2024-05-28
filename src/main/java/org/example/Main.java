@@ -26,6 +26,7 @@ public class Main {
         DaoUsuario daoUsuario = new DaoUsuarioImple();
         Maquina maquina = new Maquina(
                 null,
+                looca.getProcessador().getId(),
                 looca.getRede().getGrupoDeInterfaces().getInterfaces().get(looca.getRede().getGrupoDeInterfaces().getInterfaces().size() - 1).getEnderecoMac(),
                 null,
                 null,
@@ -53,11 +54,11 @@ public class Main {
                 break;
             }
         }
-        if (daoMaquina.validarMaquinaSqlServer(maquina.getIdPorcessador(), usuario) == null) {
+        if (daoMaquina.validarMaquinaSqlServer(maquina, usuario) == null) {
             maquina.cadastrarMaquina(maquina, usuario);
         }
 
-        maquina = daoMaquina.validarMaquinaSqlServer(maquina.getIdPorcessador(), usuario);
+        maquina = daoMaquina.validarMaquinaSqlServer(maquina, usuario);
 
         registro.entradaUser(usuario, maquina);
 

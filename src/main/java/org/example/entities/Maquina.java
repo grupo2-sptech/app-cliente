@@ -14,6 +14,7 @@ import java.util.*;
 public class Maquina {
     private Integer id;
     private String idPorcessador;
+    private String mac;
     private String nome;
     private String modelo;
     private Double memorialTotal;
@@ -42,9 +43,10 @@ public class Maquina {
         this.memorialTotal = memorialTotal;
     }
 
-    public Maquina(Integer id, String idPorcessador, String nome, String modelo, Double memorialTotal, String sistemaOperacional, Integer arquitetura) {
+    public Maquina(Integer id, String idPorcessador,String mac, String nome, String modelo, Double memorialTotal, String sistemaOperacional, Integer arquitetura) {
         this.id = id;
         this.idPorcessador = idPorcessador;
+        this.mac = mac;
         this.nome = nome;
         this.modelo = modelo;
         this.memorialTotal = memorialTotal;
@@ -159,7 +161,7 @@ public class Maquina {
             daoMaquina.cadastrarMaquinaSqlServer(idCadastro, maquina);
             daoMaquina.cadastrarMaquinaMysql(idCadastro, maquina);
 
-            maquina = daoMaquina.validarMaquinaSqlServer(maquina.getIdPorcessador(), usuario);
+            maquina = daoMaquina.validarMaquinaSqlServer(maquina, usuario);
 
             maquina.setIdSetor(maquina.getIdSetor());
             maquina.setId(maquina.getId());
@@ -222,6 +224,14 @@ public class Maquina {
 
     public void setIdPorcessador(String idPorcessador) {
         this.idPorcessador = idPorcessador;
+    }
+
+    public String getMac() {
+        return mac;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
     }
 
     public String getNome() {
