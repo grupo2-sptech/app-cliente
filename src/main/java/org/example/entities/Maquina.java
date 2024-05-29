@@ -74,26 +74,26 @@ public class Maquina {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                Double procentagerUsoRam = daoAlerta.buscarMediaUsoRam(maquina) / looca.getMemoria().getTotal() * 100;
-                if (procentagerUsoRam > 8) {
+                Double procentagerUsoRam = daoAlerta.buscarMediaUsoRam(maquina) / registro.converterGB(looca.getMemoria().getTotal()) * 100;
+                if (procentagerUsoRam > 80) {
                     daoAlerta.inserirAlertaRam(procentagerUsoRam, maquina);
-                    slack.mensagemSlack("Atenção! Uso de RAM acima de 80% por 10 minutos");
+                    slack.mensagemSlack("Atenção!\nA " + maquina.getNome() + "teve um uso médio de RAM acima de 80% por 5 minutos.");
                     slack.mensagemSlack("Média de Uso: %.2f".formatted(procentagerUsoRam));
                 }
             }
-        }, 1 * 60 * 1000, 1 * 60 * 1000);
+        }, 5 * 60 * 1000, 5 * 60 * 1000);
 
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 Double procentagerUsoCpu = daoAlerta.buscarMediaUsoCpu(maquina) * 2;
-                if (true) {
+                if (procentagerUsoCpu > 70) {
                     daoAlerta.inserirAlertaCpu(procentagerUsoCpu, maquina);
-                    slack.mensagemSlack("Atenção! Uso de CPU acima de 70% por 5 minutos");
+                    slack.mensagemSlack("Atenção!\nA " + maquina.getNome() + "teve um uso médio de CPU acima de 70% por 2 minutos.");
                     slack.mensagemSlack("Média de Uso: %.2f".formatted(procentagerUsoCpu));
                 }
             }
-        }, 1 * 60 * 1000, 1 * 60 * 1000);
+        }, 2 * 60 * 1000, 2 * 60 * 1000);
 
 
         while (true) {

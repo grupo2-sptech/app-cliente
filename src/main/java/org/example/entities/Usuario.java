@@ -1,6 +1,5 @@
 package org.example.entities;
 
-import org.example.dao.DaoUsuario;
 import org.example.dao.Implementation.DaoUsuarioImple;
 import org.example.utilities.Utilitarios;
 

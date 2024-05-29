@@ -55,7 +55,6 @@ public class FucionalidadeConsole {
                                 String pid = parts[0];
                                 Process killProcess = Runtime.getRuntime().exec("kill -9 " + pid);
                                 killProcess.waitFor();
-                                // Adicione aqui a lógica para notificar que o processo foi encerrado
                             }
                         }
                     } catch (IOException | InterruptedException e) {
@@ -75,7 +74,7 @@ public class FucionalidadeConsole {
             if (os.contains("Windows")) {
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
             } else {
-                System.out.print("\033\143");
+                new ProcessBuilder("clear").inheritIO().start().waitFor();
             }
         } catch (final Exception exception) {
             System.out.println("Erro ao Limpar o console!");
@@ -94,17 +93,6 @@ public class FucionalidadeConsole {
         }
         return false;
     }
-
-    //Encerrar processo por PID
-
-//    private static void encerrarJanela(Integer pid) {
-//        try {
-//            Sistema sistema = new Sistema();
-//            sistema.encerraProcesso(pid);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     public void encerraProcesso(Integer pid) {
         try {

@@ -1,6 +1,5 @@
 package org.example.dao.Implementation;
 
-import org.example.database.Conexao;
 import org.example.database.ConexaoMysql;
 import org.example.database.ConexaoSQLServer;
 import org.example.database.DatabaseExeption;
@@ -66,8 +65,6 @@ public class DaoUsuarioImple implements org.example.dao.DaoUsuario {
                 }
             } catch (SQLException e) {
                 System.out.println("Erro ao validar usuario SQL SERVER: " + e.getMessage());
-            } finally {
-              //  Conexao.closeStatementAndResultSet(st, rs, conn);
             }
         }
         return usuario;
@@ -84,9 +81,9 @@ public class DaoUsuarioImple implements org.example.dao.DaoUsuario {
         } else {
             try {
                 st = conn.prepareStatement("""
-                           SELECT e.token_slack, e.canal_slack, e.web_url_slack
-                               FROM empresa as e where id_empresa = ?;                
-                    """);
+                               SELECT e.token_slack, e.canal_slack, e.web_url_slack
+                                   FROM empresa as e where id_empresa = ?;                
+                        """);
                 st.setInt(1, usuario.getIdEmpresa());
                 rs = st.executeQuery();
                 if (rs.next()) {
@@ -96,8 +93,6 @@ public class DaoUsuarioImple implements org.example.dao.DaoUsuario {
                 }
             } catch (SQLException e) {
                 System.out.println("Erro ao obter token slack: " + e.getMessage());
-            } finally {
-                //  Conexao.closeStatementAndResultSet(st, rs, conn);
             }
         }
         return slack;

@@ -13,15 +13,21 @@ import java.sql.SQLException;
 
 public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
 
+
+    private Connection connSql = null;
+    private Connection connMysql = null;
+    private PreparedStatement st = null;
+    private ResultSet rs = null;
+
     public Maquina validarMaquinaMysql(String idProcessador) {
-        Connection conn = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        conn = ConexaoMysql.getConection();
+
+        if (connMysql == null) {
+            connMysql = ConexaoMysql.getConection();
+        }
 
         Maquina maquina = new Maquina();
         try {
-            st = conn.prepareStatement("SELECT * FROM maquina WHERE processador_id = ?");
+            st = connMysql.prepareStatement("SELECT * FROM maquina WHERE processador_id = ?");
             st.setString(1, idProcessador);
             rs = st.executeQuery();
             if (rs.next()) {
@@ -36,21 +42,19 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
             }
         } catch (SQLException e) {
             System.out.println("Erro ao validar maquina: " + e.getMessage());
-        } finally {
-            // ConexaoMysql.closeStatementAndResultSet(st, rs, conn);
         }
         return maquina;
     }
 
     public Maquina validarMaquinaSqlServer(Maquina maquina, Usuario usuario) throws SQLException {
-        Connection conn = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        conn = ConexaoSQLServer.getConection();
+
+        if (connSql == null) {
+            connSql = ConexaoSQLServer.getConection();
+        }
 
         Maquina maquinaReturn = new Maquina();
         try {
-            st = conn.prepareStatement("SELECT * FROM maquina WHERE processador_id = ? AND fk_empresa = ? AND num_mac = ?;");
+            st = connSql.prepareStatement("SELECT * FROM maquina WHERE processador_id = ? AND fk_empresa = ? AND num_mac = ?;");
             st.setString(1, maquina.getIdPorcessador());
             st.setInt(2, usuario.getIdEmpresa());
             st.setString(3, maquina.getMac());
@@ -59,6 +63,7 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
                 maquinaReturn.setId(rs.getInt("id_maquina"));
                 maquinaReturn.setIdPorcessador(rs.getString("processador_id"));
                 maquinaReturn.setMac(rs.getString("num_mac"));
+                maquinaReturn.setNome(rs.getString("nome_maquina"));
                 maquinaReturn.setSistemaOperacional(rs.getString("sistema_operacional"));
                 maquinaReturn.setMemorialTotal(rs.getDouble("memoria_total_maquina"));
                 maquinaReturn.setArquitetura(rs.getInt("arquitetura"));
@@ -69,17 +74,15 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
             }
         } catch (SQLException e) {
             System.out.println("Erro ao validar maquina: " + e.getMessage());
-        } finally {
-            // ConexaoMysql.closeStatementAndResultSet(st, rs, conn);
         }
         return maquinaReturn;
     }
 
     public void cadastrarMaquinaMysql(Integer id_cadastro, Maquina maquina) throws SQLException {
-        Connection connMysql = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        connMysql = ConexaoMysql.getConection();
+
+        if (connMysql == null) {
+            connMysql = ConexaoMysql.getConection();
+        }
         try {
             st = connMysql.prepareStatement("""
                     UPDATE maquina SET processador_id = ?, sistema_operacional = ?, memoria_total_maquina = ?, arquitetura = ? WHERE id_maquina = ?;
@@ -92,18 +95,16 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
             st.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Erro ao cadastrar maquina: " + e.getMessage());
-        } finally {
-            //  ConexaoMysql.closeStatementAndResultSet(st, rs, conn);
         }
     }
 
     public void cadastrarMaquinaSqlServer(Integer id_cadastro, Maquina maquina) throws SQLException {
-        Connection conn = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        conn = ConexaoSQLServer.getConection();
+
+        if (connSql == null) {
+            connSql = ConexaoSQLServer.getConection();
+        }
         try {
-            st = conn.prepareStatement("""
+            st = connSql.prepareStatement("""
                     UPDATE maquina SET processador_id = ?, num_mac = ?, sistema_operacional = ?, memoria_total_maquina = ?, arquitetura = ? WHERE id_maquina = ?;
                     """);
             st.setString(1, maquina.getIdPorcessador());
@@ -116,22 +117,19 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
         } catch (SQLException e) {
             System.out.println("Erro ao cadastrar maquina: " + e.getMessage());
 
-        } finally {
-            //  ConexaoMysql.closeStatementAndResultSet(st, rs, conn);
         }
     }
 
     public Integer buscarSetorMaquinaMysql(Integer idMaquina) {
-        Connection conn = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        conn = ConexaoMysql.getConection();
-        if (conn == null) {
+        if (connMysql == null) {
+            connMysql = ConexaoMysql.getConection();
+        }
+        if (connMysql == null) {
             FucionalidadeConsole fucionalidadeConsole = new FucionalidadeConsole();
             fucionalidadeConsole.limparConsole();
         } else {
             try {
-                st = conn.prepareStatement("SELECT fk_setor FROM maquina  WHERE id_maquina = ?;");
+                st = connMysql.prepareStatement("SELECT fk_setor FROM maquina  WHERE id_maquina = ?;");
                 st.setInt(1, idMaquina);
                 rs = st.executeQuery();
                 if (rs.next()) {
@@ -139,20 +137,19 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
                 }
             } catch (SQLException e) {
                 System.out.println("Erro ao capturar dados do setor: " + e.getMessage());
-            } finally {
-                // ConexaoMysql.closeStatementAndResultSet(st, rs, conn);
             }
         }
         return null;
     }
 
     public Integer buscarSetorMaquinaSqlServer(Integer idMaquina) throws SQLException {
-        Connection conn = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        conn = ConexaoSQLServer.getConection();
+
+        if (connSql == null) {
+            connSql = ConexaoSQLServer.getConection();
+        }
+
         try {
-            st = conn.prepareStatement("SELECT fk_setor FROM maquina WHERE id_maquina = ?;");
+            st = connSql.prepareStatement("SELECT fk_setor FROM maquina WHERE id_maquina = ?;");
             st.setInt(1, idMaquina);
             rs = st.executeQuery();
             if (rs.next()) {
@@ -160,8 +157,6 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
             }
         } catch (SQLException e) {
             System.out.println("Erro ao capturar dados do setor: " + e.getMessage());
-        } finally {
-            // ConexaoMysql.closeStatementAndResultSet(st, rs, conn);
         }
         return null;
     }

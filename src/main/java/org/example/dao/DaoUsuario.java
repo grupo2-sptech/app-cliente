@@ -2,7 +2,6 @@ package org.example.dao;
 
 
 import org.example.database.DatabaseExeption;
-import org.example.entities.Maquina;
 import org.example.entities.Usuario;
 import org.example.utilities.Slack;
 

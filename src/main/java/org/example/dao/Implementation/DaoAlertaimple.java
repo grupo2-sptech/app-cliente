@@ -6,17 +6,16 @@ import org.example.entities.Maquina;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DaoAlertaimple implements org.example.dao.DaoAlerta {
 
+    private Connection conn = null;
+    private PreparedStatement st = null;
+    private ResultSet rs = null;
+
+
     public Double buscarMediaUsoRam(Maquina maquina) {
         Double mediaUso = 0.0;
-
-        Connection conn = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
 
         try {
             if(conn == null){
@@ -28,7 +27,7 @@ public class DaoAlertaimple implements org.example.dao.DaoAlerta {
                     FROM
                         historico_hardware
                     WHERE
-                        data_hora >= DATEADD(MINUTE, - 10, GETDATE()) and fk_maquina = ?;
+                        data_hora >= DATEADD(MINUTE, - 5, GETDATE()) and fk_maquina = ?;
                     """);
             st.setInt(1, maquina.getId());
             rs = st.executeQuery();
@@ -45,10 +44,6 @@ public class DaoAlertaimple implements org.example.dao.DaoAlerta {
     public Double buscarMediaUsoCpu(Maquina maquina) {
         Double mediaUso = 0.0;
 
-        Connection conn = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
-
         try {
             if (conn == null) {
                 conn = ConexaoSQLServer.getConection();
@@ -59,7 +54,7 @@ public class DaoAlertaimple implements org.example.dao.DaoAlerta {
                     FROM
                         historico_hardware
                     WHERE
-                        data_hora >= DATEADD(MINUTE, - 5, GETDATE()) and fk_maquina = ?;
+                        data_hora >= DATEADD(MINUTE, - 2, GETDATE()) and fk_maquina = ?;
                     """);
             st.setInt(1, maquina.getId());
             rs = st.executeQuery();
@@ -74,16 +69,13 @@ public class DaoAlertaimple implements org.example.dao.DaoAlerta {
 
 
     public void inserirAlertaRam(Double usoRam, Maquina maquina) {
-        Connection conn = null;
-        PreparedStatement st = null;
-
         try {
             if (conn == null) {
                 conn = ConexaoSQLServer.getConection();
             }
             st = conn.prepareStatement("""
                     INSERT INTO alerta (fk_maquina, percentagem_uso, descricao_alerta)
-                    VALUES (?, ?, 'Atenção! Uso de RAM acima de 80% por 10 minutos');
+                    VALUES (?, ?, 'Atenção! Uso de RAM acima de 80% por 5 minutos');
                     """);
             st.setInt(1, maquina.getId());
             st.setDouble(2, usoRam);
@@ -95,15 +87,13 @@ public class DaoAlertaimple implements org.example.dao.DaoAlerta {
     }
 
     public void inserirAlertaCpu(Double usoCpu, Maquina maquina) {
-        Connection conn = null;
-        PreparedStatement st = null;
         try {
             if (conn == null) {
                 conn = ConexaoSQLServer.getConection();
             }
             st = conn.prepareStatement("""
                     INSERT INTO alerta (fk_maquina, percentagem_uso, descricao_alerta)
-                    VALUES (?, ?, 'Atenção! Uso da CPU acima de 90% por 5 minutos');
+                    VALUES (?, ?, 'Atenção! Uso da CPU acima de 70% por 2 minutos');
                     """);
             st.setInt(1, maquina.getId());
             st.setDouble(2, usoCpu);

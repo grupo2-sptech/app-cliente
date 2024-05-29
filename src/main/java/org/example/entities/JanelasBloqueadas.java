@@ -2,9 +2,7 @@ package org.example.entities;
 
 import com.github.britooo.looca.api.core.Looca;
 import com.github.britooo.looca.api.group.janelas.Janela;
-import org.example.dao.DaoAlerta;
 import org.example.dao.DaoJanelasBloqueadas;
-import org.example.dao.Implementation.DaoAlertaimple;
 import org.example.dao.Implementation.DaoJanelasBloqueadasImple;
 import org.example.utilities.Utilitarios;
 import org.example.utilities.console.FucionalidadeConsole;
@@ -41,7 +39,7 @@ public class JanelasBloqueadas {
                     utilitarios.centralizaTelaVertical(1);
                     utilitarios.centralizaTelaHorizontal(8);
                     monitoraBloqueio(listaJanelasBloqueadas.get(i).getCategoria(), maquina);
-                    daoJanelasBloqueadas.alertaBloqueio(maquina, janela.getTitulo());
+                    daoJanelasBloqueadas.alertaBloqueio(maquina, listaJanelasBloqueadas.get(i).getNome());
                     System.out.println("Processo " + janela.getTitulo() + " foi encerrado por violar as políticas de segurança da empresa!");
                     Thread.sleep(3000);
                 }

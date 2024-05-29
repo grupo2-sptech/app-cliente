@@ -5,9 +5,9 @@ import com.github.seratch.jslack.api.webhook.WebhookResponse;
 
 public class Slack {
 
-    private  String webUrl;
-    private  String token;
-    private  String canal;
+    private String webUrl;
+    private String token;
+    private String canal;
 
 
     public Slack() {
@@ -27,32 +27,32 @@ public class Slack {
             Payload payload = Payload.builder().channel(canal).text(msgbuilder.toString()).build();
 
             WebhookResponse wbResp = com.github.seratch.jslack.Slack.getInstance().send(webUrl, payload);
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Erro ao enviar mensagem para o slack: " + e.getMessage());
         }
     }
 
-    public  String getWebUrl(String string) {
+    public String getWebUrl(String string) {
         return webUrl;
     }
 
-    public  void setWebUrl(String webUrl) {
+    public void setWebUrl(String webUrl) {
         this.webUrl = webUrl;
     }
 
-    public  String getToken(String string) {
+    public String getToken(String string) {
         return token;
     }
 
-    public  void setToken(String token) {
+    public void setToken(String token) {
         this.token = token;
     }
 
-    public  String getCanal(String string) {
+    public String getCanal(String string) {
         return canal;
     }
 
-    public  void setCanal(String canal) {
+    public void setCanal(String canal) {
         this.canal = canal;
     }
 }

@@ -54,11 +54,12 @@ public class Main {
                 break;
             }
         }
-        if (daoMaquina.validarMaquinaSqlServer(maquina, usuario) == null) {
-            maquina.cadastrarMaquina(maquina, usuario);
-        }
 
         maquina = daoMaquina.validarMaquinaSqlServer(maquina, usuario);
+
+        if (maquina == null) {
+            maquina.cadastrarMaquina(maquina, usuario);
+        }
 
         registro.entradaUser(usuario, maquina);
 

@@ -15,15 +15,20 @@ import java.util.List;
 
 public class DaoComponenteImple implements org.example.dao.DaoComponente {
 
+    private Connection connSql = null;
+    private Connection connMysql = null;
+    private PreparedStatement st = null;
+    private ResultSet rs = null;
+
     public Integer cadastrarComponenteMysql(Componente componente, Integer idMaquina) {
-        Connection conn = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
+
+        if (connMysql == null) {
+            connMysql = ConexaoMysql.getConection();
+        }
+
         Integer idInserido = 0;
         try {
-            conn = ConexaoMysql.getConection();
-
-            st = conn.prepareStatement("""
+            st = connMysql.prepareStatement("""
                             INSERT INTO componente (tipo_componente, tamanho_total_gb, tamanho_disponivel_gb, modelo, frequencia, fabricante, fk_maquina) VALUES (?,?,?,?,?,?,?);
                     """, st.RETURN_GENERATED_KEYS);
 
@@ -85,15 +90,15 @@ public class DaoComponenteImple implements org.example.dao.DaoComponente {
 
 
     public List<Componente> buscarComponenteMysql(Maquina maquina) {
-        Connection conn = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
 
         List<Componente> componentes = new ArrayList<>();
 
+        if (connMysql == null) {
+            connMysql = ConexaoMysql.getConection();
+        }
+
         try {
-            conn = ConexaoMysql.getConection();
-            st = conn.prepareStatement("SELECT componente.* FROM componente join maquina on id_maquina = fk_maquina WHERE fk_maquina = ?;");
+            st = connMysql.prepareStatement("SELECT componente.* FROM componente join maquina on id_maquina = fk_maquina WHERE fk_maquina = ?;");
             st.setInt(1, maquina.getId());
             rs = st.executeQuery();
             while (rs.next()) {

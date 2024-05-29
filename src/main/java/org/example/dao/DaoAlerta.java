@@ -2,8 +2,6 @@ package org.example.dao;
 
 import org.example.entities.Maquina;
 
-import java.util.List;
-
 public interface DaoAlerta {
     Double buscarMediaUsoRam(Maquina maquina);
 

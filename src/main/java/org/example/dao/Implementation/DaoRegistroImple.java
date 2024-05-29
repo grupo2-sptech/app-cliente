@@ -3,15 +3,12 @@ package org.example.dao.Implementation;
 import com.github.britooo.looca.api.core.Looca;
 import org.example.database.ConexaoMysql;
 import org.example.database.ConexaoSQLServer;
-import org.example.entities.Componente;
 import org.example.entities.Maquina;
 import org.example.entities.Usuario;
 import org.example.entities.component.Registro;
-import org.example.utilities.Utilitarios;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DaoRegistroImple implements org.example.dao.DaoRegistro {
@@ -20,16 +17,12 @@ public class DaoRegistroImple implements org.example.dao.DaoRegistro {
     private Connection connSql = null;
     private Connection conn = null;
     private PreparedStatement st = null;
-    private ResultSet rs = null;
-
 
     Looca looca = new Looca();
     Registro registro = new Registro();
 
-
     public void inserirRegistroTempoReal(Maquina maquina) {
 
-        String comp = "";
         Double usoCpu = Math.round(looca.getProcessador().getUso() * 100.0) / 100.0;
         Double usoRam = registro.converterGB(looca.getMemoria().getEmUso());
 
@@ -77,7 +70,6 @@ public class DaoRegistroImple implements org.example.dao.DaoRegistro {
             System.out.println("Erro ao inserir registro de RAM no banco SQLServer: " + e.getMessage());
             connSql = null;
         }
-
 
         try {
             st = null;

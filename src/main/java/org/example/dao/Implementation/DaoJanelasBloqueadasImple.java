@@ -4,7 +4,6 @@ import org.example.database.ConexaoMysql;
 import org.example.database.ConexaoSQLServer;
 import org.example.entities.JanelasBloqueadas;
 import org.example.entities.Maquina;
-import org.example.entities.Usuario;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,6 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloqueadas {
+
+
+    private Connection connSql = null;
+    private ResultSet rs = null;
+    private PreparedStatement ps = null;
+
 
     public List<String> buscarJanelasBloqueadasMysql(List<Integer> idCard) {
         Connection connBloqueio = null;
@@ -47,18 +52,15 @@ public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloq
     }
 
     public List<JanelasBloqueadas> buscarJanelasBloqueadasSqlServer(List<Integer> idCard) {
-        Connection connAtivo = null;
-        ResultSet rs = null;
-        PreparedStatement ps = null;
 
         List<JanelasBloqueadas> listaJanelasBloqueadas = new ArrayList<>();
 
         for (Integer idCardVez : idCard) {
             try {
-                if (connAtivo == null) {
-                    connAtivo = ConexaoSQLServer.getConection();
+                if (connSql == null) {
+                    connSql = ConexaoSQLServer.getConection();
                 }
-                ps = connAtivo.prepareStatement("""
+                ps = connSql.prepareStatement("""
                         SELECT p.titulo_processo, fk_card
                         FROM processos_janelas AS p
                         JOIN card_tem_processo AS card ON p.id_processo = card.fk_processo_card
@@ -74,7 +76,7 @@ public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloq
                 }
             } catch (Exception e) {
                 System.out.println("Erro ao buscar janelas bloqueadas SQLSERVER: " + e.getMessage());
-                connAtivo = null;
+                connSql = null;
             }
         }
         return listaJanelasBloqueadas;
@@ -83,14 +85,10 @@ public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloq
     public List<Integer> buscarCadsAtivosNoSetorSql(Integer idSetor, Integer idEmpresa) {
         List<Integer> idCards = new ArrayList<>();
 
-        Connection conn = null;
-        ResultSet rs = null;
-        PreparedStatement ps = null;
-
         try {
-            conn = ConexaoSQLServer.getConection();
+            connSql = ConexaoSQLServer.getConection();
 
-            ps = conn.prepareStatement("""
+            ps = connSql.prepareStatement("""
                     SELECT * FROM setor_tem_categoria WHERE ativo = 1 AND fk_empresa = ? AND fk_setor =?;
                     """);
             ps.setInt(1, idEmpresa);
@@ -106,13 +104,13 @@ public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloq
     }
 
     public void inserirDadosBloqueio(Maquina maquina, Integer categoria) {
-        Connection conn;
-        PreparedStatement ps;
-        ResultSet rt;
 
+        if (connSql == null) {
+            connSql = ConexaoSQLServer.getConection();
+
+        }
         try {
-            conn = ConexaoSQLServer.getConection();
-            ps = conn.prepareStatement("""
+            ps = connSql.prepareStatement("""
                     insert into historico_bloqueios (fk_empresa, fk_categoria, fk_setor) values (?,?,?);                                                                                                            
                     """);
             ps.setInt(1, maquina.getIdEmpresa());
@@ -126,13 +124,13 @@ public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloq
     }
 
     public void alertaBloqueio(Maquina maquina, String nomeProcesso) {
-        Connection conn;
-        PreparedStatement ps;
-        ResultSet rt;
-        String descricaoAlerta = "Atenção a " + maquina + " tentou acessar o processo " + nomeProcesso;
+
+        if(connSql == null){
+            connSql = ConexaoSQLServer.getConection();
+        }
+        String descricaoAlerta = "Atenção a " + maquina.getNome() + " tentou acessar o processo " + nomeProcesso;
         try {
-            conn = ConexaoSQLServer.getConection();
-            ps = conn.prepareStatement("""
+            ps = connSql.prepareStatement("""
                     INSERT INTO alerta (fk_maquina, descricao_alerta)
                                         VALUES (?, ?);                    """);
             ps.setInt(1, maquina.getId());
