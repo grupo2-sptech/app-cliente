@@ -23,7 +23,6 @@ public class Main {
         Usuario usuario = new Usuario();
         DaoMaquina daoMaquina = new DaoMaquinaImple();
         Looca looca = new Looca();
-        DaoUsuario daoUsuario = new DaoUsuarioImple();
         Maquina maquina = new Maquina(
                 null,
                 looca.getProcessador().getId(),
@@ -54,12 +53,11 @@ public class Main {
                 break;
             }
         }
-
-        maquina = daoMaquina.validarMaquinaSqlServer(maquina, usuario);
-
-        if (maquina == null) {
+        if (daoMaquina.validarMaquinaSqlServer(maquina, usuario) == null) {
             maquina.cadastrarMaquina(maquina, usuario);
         }
+
+        maquina = daoMaquina.validarMaquinaSqlServer(maquina, usuario);
 
         registro.entradaUser(usuario, maquina);
 

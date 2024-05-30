@@ -74,7 +74,7 @@ public class FucionalidadeConsole {
             if (os.contains("Windows")) {
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
             } else {
-                new ProcessBuilder("clear").inheritIO().start().waitFor();
+                System.out.print("\033\143");
             }
         } catch (final Exception exception) {
             System.out.println("Erro ao Limpar o console!");
