@@ -29,7 +29,7 @@ public class Main {
                 looca.getRede().getGrupoDeInterfaces().getInterfaces().get(looca.getRede().getGrupoDeInterfaces().getInterfaces().size() - 1).getEnderecoMac(),
                 null,
                 null,
-                registro.converterGB(looca.getMemoria().getTotal()),
+                registro.converterGB(looca.getGrupoDeDiscos().getTamanhoTotal()),
                 looca.getSistema().getSistemaOperacional(),
                 looca.getSistema().getArquitetura()
         );
