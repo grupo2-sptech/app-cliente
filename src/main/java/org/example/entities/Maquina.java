@@ -102,7 +102,7 @@ public class Maquina {
             Utilitarios utilitarios = new Utilitarios();
             utilitarios.mensagemInformativa();
             janelasBloqueadas.monitorarJanelas(daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa())), maquina);
-            Thread.sleep(1000);
+//            Thread.sleep(1000);
         }
     }
 
