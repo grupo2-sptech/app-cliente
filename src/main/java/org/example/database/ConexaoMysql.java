@@ -5,9 +5,9 @@ import java.sql.*;
 public class ConexaoMysql extends Conexao {
 
 
-    private static final String URL = "jdbc:mysql://:3306/hardware_security";
-    private static final String USUARIO = "aluno1";
-    private static final String SENHA = "123";
+    private static final String URL = "jdbc:mysql://mysql-server:3306/hardware_security";
+    private static final String USUARIO = "root";
+    private static final String SENHA = "urubu100";
 
     static {
         try {

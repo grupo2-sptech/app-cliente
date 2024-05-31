@@ -43,7 +43,7 @@ public class Maquina {
         this.memorialTotal = memorialTotal;
     }
 
-    public Maquina(Integer id, String idPorcessador,String mac, String nome, String modelo, Double memorialTotal, String sistemaOperacional, Integer arquitetura) {
+    public Maquina(Integer id, String idPorcessador, String mac, String nome, String modelo, Double memorialTotal, String sistemaOperacional, Integer arquitetura) {
         this.id = id;
         this.idPorcessador = idPorcessador;
         this.mac = mac;
@@ -95,15 +95,49 @@ public class Maquina {
             }
         }, 2 * 60 * 1000, 2 * 60 * 1000);
 
+        Thread registroThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    daoRegistro.inserirRegistroTempoReal(maquina);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        
+                    }
+                }
+            }
+        });
 
-        while (true) {
-            daoRegistro.inserirRegistroTempoReal(maquina);
-            fucionalidadeConsole.limparConsole();
-            Utilitarios utilitarios = new Utilitarios();
-            utilitarios.mensagemInformativa();
-            janelasBloqueadas.monitorarJanelas(daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa())), maquina);
-//            Thread.sleep(1000);
-        }
+        Thread monitoramentoThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    FucionalidadeConsole fucionalidadeConsole = new FucionalidadeConsole();
+                    fucionalidadeConsole.limparConsole();
+                    Utilitarios utilitarios = new Utilitarios();
+                    utilitarios.mensagemInformativa();
+                    try {
+                        janelasBloqueadas.monitorarJanelas(daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa())), maquina);
+                    } catch (InterruptedException e) {
+                        System.out.println("Erro ao monitorar as janelas " + e);
+                    }
+
+                }
+            }
+        });
+
+        registroThread.start();
+        monitoramentoThread.start();
+
+//        while (true) {
+//            daoRegistro.inserirRegistroTempoReal(maquina);
+//            fucionalidadeConsole.limparConsole();
+//            Utilitarios utilitarios = new Utilitarios();
+//            utilitarios.mensagemInformativa();
+//            janelasBloqueadas.monitorarJanelas(daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa())), maquina);
+////            Thread.sleep(1000);
+//        }
     }
 
     public void cadastrarMaquina(Maquina maquina, Usuario usuario) throws SQLException {
@@ -133,7 +167,7 @@ public class Maquina {
                     null,
                     null,
                     looca.getProcessador().getFabricante(),
-                    null,
+                    looca.getProcessador().getNome(),
                     looca.getProcessador().getFrequencia());
 
             maquina.addComponente(componenteCpu);
@@ -145,8 +179,8 @@ public class Maquina {
                         "Disco " + (i + 1),
                         registro.converterGB(looca.getGrupoDeDiscos().getVolumes().get(i).getTotal()),
                         registro.converterGB(looca.getGrupoDeDiscos().getVolumes().get(i).getDisponivel()),
-                        looca.getGrupoDeDiscos().getDiscos().get(i).getModelo(),
                         null,
+                        looca.getGrupoDeDiscos().getDiscos().get(i).getModelo(),
                         null
                 );
 
