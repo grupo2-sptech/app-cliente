@@ -7,11 +7,20 @@ import org.example.entities.component.Registro;
 import org.example.utilities.Slack;
 import org.example.utilities.Utilitarios;
 import org.example.utilities.console.FucionalidadeConsole;
+import org.example.utilities.log.Log;
 
+import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Maquina {
+
+    Log logTeste = new Log();
+    LocalDateTime currentDateTime = LocalDateTime.now();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss");
+    String formattedDateTime = currentDateTime.format(formatter);
     private Integer id;
     private String idPorcessador;
     private String mac;
@@ -204,6 +213,12 @@ public class Maquina {
             componenteCpu.setIdComponente(daoComponente.cadastrarComponenteSqlServer(componenteCpu, idCadastro));
             componenteRam.setIdComponente(daoComponente.cadastrarComponenteMysql(componenteRam, idCadastro));
             componenteCpu.setIdComponente(daoComponente.cadastrarComponenteMysql(componenteCpu, idCadastro));
+
+            try {
+                logTeste.geradorLog("[" + formattedDateTime + "] MAQUINA CRIADA", "Criação");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
