@@ -61,6 +61,8 @@ public class DaoUsuarioImple implements org.example.dao.DaoUsuario {
                 if (rs.next()) {
                     usuario.setId(rs.getInt("id_funcionario"));
                     usuario.setNome(rs.getString("nome_funcionario"));
+                    usuario.setLogin(rs.getString("login_acesso"));
+                    usuario.setCargo(rs.getString("cargo_funcionario"));
                     usuario.setIdEmpresa(rs.getInt("fk_empresa"));
                 }
             } catch (SQLException e) {

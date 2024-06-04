@@ -12,6 +12,7 @@ public class Usuario {
     private String nome;
     private String email;
     private String senha;
+    private String cargo;
     private String login;
     private Integer idEmpresa;
 
@@ -20,11 +21,12 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(String nome, String email, String senha, String login, Integer idEmpresa) {
+    public Usuario(String nome, String cargo, String email, String senha, String login, Integer idEmpresa) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
         this.login = login;
+        this.cargo = cargo;
         this.idEmpresa = idEmpresa;
     }
 
@@ -77,6 +79,14 @@ public class Usuario {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getCargo() {
+        return cargo;
+    }
+
+    public void setCargo(String cargo) {
+        this.cargo = cargo;
     }
 
     public String getNome() {

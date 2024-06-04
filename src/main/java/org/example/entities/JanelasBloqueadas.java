@@ -48,11 +48,11 @@ public class JanelasBloqueadas {
                     utilitarios.centralizaTelaHorizontal(8);
                     monitoraBloqueio(listaJanelasBloqueadas.get(i).getCategoria(), maquina);
                     daoJanelasBloqueadas.alertaBloqueio(maquina, listaJanelasBloqueadas.get(i).getNome());
-                    try {
-                        logTeste.geradorLog("[" + formattedDateTime + "] O PROCESSO: " +  janela.getTitulo() + " FOI BLOQUEADO", "Processo e inovação");
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+//                    try {
+//                        logTeste.geradorLog("[" + formattedDateTime + "] O PROCESSO: " +  janela.getTitulo() + " FOI BLOQUEADO", "Processo e inovação");
+//                    } catch (IOException e) {
+//                        System.out.println("erro com o log");
+//                    }
                     System.out.println("Processo " + janela.getTitulo() + " foi encerrado por violar as políticas de segurança da empresa!");
                     Thread.sleep(3000);
                 }

@@ -74,8 +74,8 @@ public class DaoAlertaimple implements org.example.dao.DaoAlerta {
                 conn = ConexaoSQLServer.getConection();
             }
             st = conn.prepareStatement("""
-                    INSERT INTO alerta (fk_maquina, percentagem_uso, descricao_alerta)
-                    VALUES (?, ?, 'Atenção! Uso de RAM acima de 80% por 5 minutos');
+                    INSERT INTO alerta (fk_maquina, percentagem_uso, descricao_alerta, titulo)
+                    VALUES (?, ?, 'Atenção! Uso de RAM acima de 80% por 5 minutos. Por favor, verifique a atividade da máquina.', 'Informações da Memória Ram');
                     """);
             st.setInt(1, maquina.getId());
             st.setDouble(2, usoRam);
@@ -92,8 +92,8 @@ public class DaoAlertaimple implements org.example.dao.DaoAlerta {
                 conn = ConexaoSQLServer.getConection();
             }
             st = conn.prepareStatement("""
-                    INSERT INTO alerta (fk_maquina, percentagem_uso, descricao_alerta)
-                    VALUES (?, ?, 'Atenção! Uso da CPU acima de 70% por 2 minutos');
+                    INSERT INTO alerta (fk_maquina, percentagem_uso, descricao_alerta, titulo)
+                    VALUES (?, ?, 'Atenção! Uso da CPU acima de 70% por 2 minutos. Verifique as informações do processador');
                     """);
             st.setInt(1, maquina.getId());
             st.setDouble(2, usoCpu);

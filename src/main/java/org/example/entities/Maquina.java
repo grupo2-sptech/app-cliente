@@ -107,13 +107,15 @@ public class Maquina {
         Thread registroThread = new Thread(new Runnable() {
             @Override
             public void run() {
+                FucionalidadeConsole fucionalidadeConsole = new FucionalidadeConsole();
+                fucionalidadeConsole.limparConsole();
                 while (true) {
                     daoRegistro.inserirRegistroTempoReal(maquina);
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        
-                    }
+//                    try {
+//                        Thread.sleep(1000);
+//                    } catch (InterruptedException e) {
+//
+//                    }
                 }
             }
         });
@@ -131,7 +133,6 @@ public class Maquina {
                     } catch (InterruptedException e) {
                         System.out.println("Erro ao monitorar as janelas " + e);
                     }
-
                 }
             }
         });
@@ -149,77 +150,101 @@ public class Maquina {
 //        }
     }
 
-    public void cadastrarMaquina(Maquina maquina, Usuario usuario) throws SQLException {
+    public void cadastrarMaquina(Maquina maquina, Usuario usuario) throws SQLException, IOException {
 
+        logTeste.geradorLog(logTeste.cabecalho(), "criação");
+        logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Funcionario responsavel pelo cadastro: " + usuario.getNome() + " - Cargo: " + usuario.getCargo() + " - Login: " + usuario.getLogin(), "criação");
         DaoMaquina daoMaquina = new DaoMaquinaImple();
         DaoComponente daoComponente = new DaoComponenteImple();
-        utilitarios.centralizaTelaHorizontal(8);
-        utilitarios.mensagemCadastroMaquina();
-        utilitarios.centralizaTelaHorizontal(8);
-        System.out.print("Insira o código aqui: ");
-        Integer idCadastro = sc.nextInt();
-        if (daoMaquina.buscarSetorMaquinaSqlServer(idCadastro) == null) {
-            utilitarios.codigoIncorreto();
-        } else {
-            maquina.setId(idCadastro);
-            Componente componenteRam = new Componente(
-                    "Memória Ram",
-                    registro.converterGB(looca.getMemoria().getTotal()),
-                    null,
-                    null,
-                    null,
-                    null);
-            maquina.addComponente(componenteRam);
 
-            Componente componenteCpu = new Componente(
-                    "Processador",
-                    null,
-                    null,
-                    looca.getProcessador().getFabricante(),
-                    looca.getProcessador().getNome(),
-                    looca.getProcessador().getFrequencia());
 
-            maquina.addComponente(componenteCpu);
+        Integer idCadastro;
 
-            Map<String, Componente> componentesDisco = new HashMap<>();
-
-            for (int i = 0; i < looca.getGrupoDeDiscos().getDiscos().size(); i++) {
-                Componente componenteDisco = new Componente(
-                        "Disco " + (i + 1),
-                        registro.converterGB(looca.getGrupoDeDiscos().getVolumes().get(i).getTotal()),
-                        registro.converterGB(looca.getGrupoDeDiscos().getVolumes().get(i).getDisponivel()),
-                        null,
-                        looca.getGrupoDeDiscos().getDiscos().get(i).getModelo(),
-                        null
-                );
-
-                Integer idComponenteDisco;
-                idComponenteDisco = daoComponente.cadastrarComponenteSqlServer(componenteDisco, idCadastro);
-                daoComponente.cadastrarComponenteMysql(componenteDisco, idCadastro);
-                componenteDisco.setIdComponente(idComponenteDisco);
-                componentesDisco.put("componenteDisco" + (i + 1), componenteDisco);
-                maquina.addComponente(componenteDisco);
-            }
-
-            daoMaquina.cadastrarMaquinaSqlServer(idCadastro, maquina);
-            daoMaquina.cadastrarMaquinaMysql(idCadastro, maquina);
-
-            maquina = daoMaquina.validarMaquinaSqlServer(maquina, usuario);
-
-            maquina.setIdSetor(maquina.getIdSetor());
-            maquina.setId(maquina.getId());
-
-            componenteRam.setIdComponente(daoComponente.cadastrarComponenteSqlServer(componenteRam, idCadastro));
-            componenteCpu.setIdComponente(daoComponente.cadastrarComponenteSqlServer(componenteCpu, idCadastro));
-            componenteRam.setIdComponente(daoComponente.cadastrarComponenteMysql(componenteRam, idCadastro));
-            componenteCpu.setIdComponente(daoComponente.cadastrarComponenteMysql(componenteCpu, idCadastro));
-
+        while (true) {
             try {
-                logTeste.geradorLog("[" + formattedDateTime + "] MAQUINA CRIADA", "Criação");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                utilitarios.centralizaTelaHorizontal(8);
+                utilitarios.mensagemCadastroMaquina();
+                utilitarios.centralizaTelaHorizontal(8);
+                System.out.print("Insira o código aqui: ");
+                idCadastro = sc.nextInt();
+                if (daoMaquina.buscarSetorMaquinaSqlServer(idCadastro) == null) {
+                    utilitarios.codigoIncorreto();
+                    logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Código de cadastro invalido ID:" + idCadastro, "criação");
+                } else {
+                    break;
+                }
+            } catch (InputMismatchException e) {
+                utilitarios.centralizaTelaHorizontal(8);
+                System.out.println("Entrada inválida. Por favor, insira um codigo válido.");
+                sc.nextLine(); // Limpa a entrada inválida
+            } catch (Exception e) {
+                System.out.println("Erro inesperado: " + e.getMessage());
             }
         }
+
+        maquina.setId(idCadastro);
+
+        logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Iniciando cadastro da máquina com ID: " + idCadastro, "criação");
+
+        // Adicionando componente de memória RAM
+        Componente componenteRam = new Componente(
+                "Memória Ram",
+                registro.converterGB(looca.getMemoria().getTotal()),
+                null,
+                null,
+                null,
+                null);
+        maquina.addComponente(componenteRam);
+
+
+        Componente componenteCpu = new Componente(
+                "Processador",
+                null,
+                null,
+                looca.getProcessador().getFabricante(),
+                looca.getProcessador().getNome(),
+                looca.getProcessador().getFrequencia());
+        maquina.addComponente(componenteCpu);
+
+
+        Map<String, Componente> componentesDisco = new HashMap<>();
+        for (int i = 0; i < looca.getGrupoDeDiscos().getDiscos().size(); i++) {
+            Componente componenteDisco = new Componente(
+                    "Disco " + (i + 1),
+                    registro.converterGB(looca.getGrupoDeDiscos().getVolumes().get(i).getTotal()),
+                    registro.converterGB(looca.getGrupoDeDiscos().getVolumes().get(i).getDisponivel()),
+                    null,
+                    looca.getGrupoDeDiscos().getDiscos().get(i).getModelo(),
+                    null);
+
+            Integer idComponenteDisco = daoComponente.cadastrarComponenteSqlServer(componenteDisco, idCadastro);
+
+            logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Componente disco cadastrado no SQL Server com ID: " + idComponenteDisco, "criação");
+
+            daoComponente.cadastrarComponenteMysql(componenteDisco, idCadastro);
+            componenteDisco.setIdComponente(idComponenteDisco);
+            componentesDisco.put("componenteDisco" + (i + 1), componenteDisco);
+            maquina.addComponente(componenteDisco);
+
+        }
+
+        daoMaquina.cadastrarMaquinaSqlServer(idCadastro, maquina);
+        daoMaquina.cadastrarMaquinaMysql(idCadastro, maquina);
+
+        maquina = daoMaquina.validarMaquinaSqlServer(maquina, usuario);
+        maquina.setIdSetor(maquina.getIdSetor());
+        maquina.setId(maquina.getId());
+
+        componenteRam.setIdComponente(daoComponente.cadastrarComponenteSqlServer(componenteRam, idCadastro));
+        componenteCpu.setIdComponente(daoComponente.cadastrarComponenteSqlServer(componenteCpu, idCadastro));
+        daoComponente.cadastrarComponenteMysql(componenteRam, idCadastro);
+        daoComponente.cadastrarComponenteMysql(componenteCpu, idCadastro);
+
+        logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Máquina cadastrada com sucesso no SQL Server e MySQL: " + maquina.getNome(), "criação");
+        logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Componente RAM cadastrado com ID: " + componenteRam.getIdComponente(), "criação");
+        logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Componente CPU cadastrado com ID: " + componenteCpu.getIdComponente(), "criação");
+        logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Máquina cadastrada com sucesso", "criação");
+
     }
 
 

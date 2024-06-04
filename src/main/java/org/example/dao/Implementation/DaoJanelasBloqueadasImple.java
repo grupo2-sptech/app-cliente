@@ -131,8 +131,8 @@ public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloq
         String descricaoAlerta = "Atenção a " + maquina.getNome() + " tentou acessar o processo " + nomeProcesso;
         try {
             ps = connSql.prepareStatement("""
-                    INSERT INTO alerta (fk_maquina, descricao_alerta)
-                                        VALUES (?, ?);                    """);
+                    INSERT INTO alerta (fk_maquina, descricao_alerta, titulo)
+                                        VALUES (?, ?, 'Processo bloqueado');                    """);
             ps.setInt(1, maquina.getId());
             ps.setString(2, descricaoAlerta);
             ps.executeUpdate();
