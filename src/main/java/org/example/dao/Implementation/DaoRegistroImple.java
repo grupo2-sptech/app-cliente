@@ -6,13 +6,16 @@ import org.example.database.ConexaoSQLServer;
 import org.example.entities.Maquina;
 import org.example.entities.Usuario;
 import org.example.entities.component.Registro;
+import org.example.utilities.log.Log;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class DaoRegistroImple implements org.example.dao.DaoRegistro {
 
+    Log logTeste = new Log();
     private Connection connMysl = null;
     private Connection connSql = null;
     private PreparedStatement stRamMysql = null;
@@ -34,7 +37,11 @@ public class DaoRegistroImple implements org.example.dao.DaoRegistro {
             stRamSqlServer = connSql.prepareStatement("INSERT INTO historico_hardware (ram_ocupada, data_hora, fk_maquina) VALUES (?, GETDATE(), ?);");
             stCpuSqlServer = connSql.prepareStatement("INSERT INTO historico_hardware (cpu_ocupada, data_hora, fk_maquina) VALUES (?, GETDATE(), ?);");
         } catch (SQLException e) {
-            System.out.println("Erro ao preparar statements: " + e.getMessage());
+            try {
+                logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao preparar statements: " + e.getMessage(), "erro de conexao registro");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
@@ -71,19 +78,31 @@ public class DaoRegistroImple implements org.example.dao.DaoRegistro {
             connSql.commit();
 
         } catch (SQLException e) {
-            System.out.println("Erro ao inserir registros: " + e.getMessage());
+            try {
+                logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao inserir registros: " + e.getMessage(), "erro de conexao registro");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
             try {
                 if (connMysl != null) connMysl.rollback();
                 if (connSql != null) connSql.rollback();
             } catch (SQLException ex) {
-                System.out.println("Erro ao reverter transações: " + ex.getMessage());
+                try {
+                    logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao reverter transações: " + e.getMessage(), "erro de conexao registro");
+                } catch (IOException exc) {
+                    throw new RuntimeException(exc);
+                }
             }
         } finally {
             try {
                 if (connMysl != null) connMysl.setAutoCommit(true);
                 if (connSql != null) connSql.setAutoCommit(true);
             } catch (SQLException e) {
-                System.out.println("Erro ao redefinir auto-commit: " + e.getMessage());
+                try {
+                    logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao redefinir auto-commit: " + e.getMessage(), "erro de conexao registro");
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         }
     }
@@ -97,7 +116,11 @@ public class DaoRegistroImple implements org.example.dao.DaoRegistro {
             st.setInt(2, maquina.getId());
             st.execute();
         } catch (SQLException e) {
-            System.out.println("Erro ao registrar entrada: " + e.getMessage());
+            try {
+                logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao registrar entrada: " + e.getMessage(), "erro de conexao registro");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 }

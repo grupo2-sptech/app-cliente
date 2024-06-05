@@ -4,7 +4,9 @@ import org.example.database.ConexaoMysql;
 import org.example.database.ConexaoSQLServer;
 import org.example.entities.JanelasBloqueadas;
 import org.example.entities.Maquina;
+import org.example.utilities.log.Log;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,7 +15,7 @@ import java.util.List;
 
 public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloqueadas {
 
-
+    Log logTeste = new Log();
     private Connection connSql = null;
     private ResultSet rs = null;
     private PreparedStatement ps = null;
@@ -44,7 +46,12 @@ public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloq
                     janelasBloqueadas.addBloqueioNaLista(rs.getString("titulo_processo"));
                 }
             } catch (Exception e) {
-                System.out.println("Erro ao buscar janelas bloqueadas SQLSERVER: " + e.getMessage());
+                try {
+                    logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao buscar janelas bloqueadas SQLSERVER: " + e.getMessage(), "erro de conexao janelas");
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
                 connBloqueio = null;
             }
         }
@@ -75,7 +82,12 @@ public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloq
                     listaJanelasBloqueadas.add(janelasBloqueadas);
                 }
             } catch (Exception e) {
-                System.out.println("Erro ao buscar janelas bloqueadas SQLSERVER: " + e.getMessage());
+                try {
+                    logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao buscar janelas bloqueadas SQLSERVER: " + e.getMessage(), "erro de conexao janelas");
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
                 connSql = null;
             }
         }
@@ -98,7 +110,12 @@ public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloq
                 idCards.add(rs.getInt("id_card"));
             }
         } catch (Exception e) {
-            System.out.println("Erro ao buscar janelas bloqueadas SQLSERVER: " + e.getMessage());
+            try {
+                logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao buscar janelas bloqueadas SQLSERVER: " + e.getMessage(), "erro de conexao janelas");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
         }
         return idCards;
     }
@@ -119,7 +136,12 @@ public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloq
 
             ps.executeUpdate();
         } catch (Exception e) {
-            System.out.println("Erro ao inserir o hitorico" + e.getMessage());
+            try {
+                logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao inserir o historico " + e.getMessage(), "erro de conexao janelas");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
         }
     }
 
@@ -137,7 +159,12 @@ public class DaoJanelasBloqueadasImple implements org.example.dao.DaoJanelasBloq
             ps.setString(2, descricaoAlerta);
             ps.executeUpdate();
         } catch (Exception e) {
-            System.out.println("Erro ao inserir o hitorico" + e.getMessage());
+            try {
+                logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao inserir o hitorico " + e.getMessage(), "erro de conexao janelas");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
         }
     }
 }

@@ -2,14 +2,17 @@ package org.example.database;
 
 import org.example.utilities.Utilitarios;
 import org.example.utilities.console.FucionalidadeConsole;
+import org.example.utilities.log.Log;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConexaoSQLServer extends Conexao {
 
-    private static final String URL = "jdbc:sqlserver://44.213.9.204:1433;database=hardware_security2;encrypt=true;trustServerCertificate=true";
+    static Log logTeste = new Log();
+    private static final String URL = "jdbc:sqlserver://52.3.240.72:1433;database=hardware_security2;encrypt=true;trustServerCertificate=true";
     private static final String USUARIO = "sa";
     private static final String SENHA = "urubu100";
 
@@ -32,6 +35,12 @@ public class ConexaoSQLServer extends Conexao {
             Utilitarios utilitarios = new Utilitarios();
             utilitarios.centralizaTelaVertical(2);
             utilitarios.problemaConexao();
+            try {
+                logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + e.getMessage(), "erro conexao banco de dados");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
         }
         return conn;
     }

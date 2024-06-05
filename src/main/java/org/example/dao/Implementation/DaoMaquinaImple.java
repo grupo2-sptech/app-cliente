@@ -5,7 +5,9 @@ import org.example.database.ConexaoSQLServer;
 import org.example.entities.Maquina;
 import org.example.entities.Usuario;
 import org.example.utilities.console.FucionalidadeConsole;
+import org.example.utilities.log.Log;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,7 +15,7 @@ import java.sql.SQLException;
 
 public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
 
-
+    Log logTeste = new Log();
     private Connection connSql = null;
     private Connection connMysql = null;
     private PreparedStatement st = null;
@@ -41,7 +43,11 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
                 return null;
             }
         } catch (SQLException e) {
-            System.out.println("Erro ao validar maquina: " + e.getMessage());
+            try {
+                logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao validar maquina: " + e.getMessage(), "erro de conexao maquina");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         return maquina;
     }
@@ -73,7 +79,11 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
                 return null;
             }
         } catch (SQLException e) {
-            System.out.println("Erro ao validar maquina: " + e.getMessage());
+            try {
+                logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao validar maquina: " + e.getMessage(), "erro de conexao maquina");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         return maquinaReturn;
     }
@@ -94,7 +104,12 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
             st.setInt(5, id_cadastro);
             st.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Erro ao cadastrar maquina: " + e.getMessage());
+            try {
+                logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao cadastrar maquina: " + e.getMessage(), "erro de conexao maquina");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
         }
     }
 
@@ -115,8 +130,11 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
             st.setInt(6, id_cadastro);
             st.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Erro ao cadastrar maquina: " + e.getMessage());
-
+            try {
+                logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao cadastrar maquina: " + e.getMessage(), "erro de conexao maquina");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
@@ -136,7 +154,11 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
                     return rs.getInt("fk_setor");
                 }
             } catch (SQLException e) {
-                System.out.println("Erro ao capturar dados do setor: " + e.getMessage());
+                try {
+                    logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao capturar dados do setor: " + e.getMessage(), "erro de conexao maquina");
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         }
         return null;
@@ -156,7 +178,12 @@ public class DaoMaquinaImple implements org.example.dao.DaoMaquina {
                 return rs.getInt("fk_setor");
             }
         } catch (SQLException e) {
-            System.out.println("Erro ao capturar dados do setor: " + e.getMessage());
+            try {
+                logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao capturar dados do setor: " + e.getMessage(), "erro de conexao maquina");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
         }
         return null;
     }

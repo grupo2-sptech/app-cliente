@@ -44,6 +44,10 @@ public class Log {
         // Escrever mensagem no log
         try (FileWriter fw = new FileWriter(logFile, true);
              BufferedWriter bw = new BufferedWriter(fw)) {
+            if (logFile.length() == 0) {
+                bw.write(cabecalho());
+                bw.newLine();
+            }
             bw.write(mensagem);
             bw.newLine();
         }

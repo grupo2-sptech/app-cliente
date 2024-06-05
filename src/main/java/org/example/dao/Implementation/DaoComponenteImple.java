@@ -5,7 +5,9 @@ import org.example.database.ConexaoSQLServer;
 import org.example.entities.Componente;
 import org.example.entities.Maquina;
 import org.example.utilities.console.FucionalidadeConsole;
+import org.example.utilities.log.Log;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,6 +17,7 @@ import java.util.List;
 
 public class DaoComponenteImple implements org.example.dao.DaoComponente {
 
+    Log logTeste = new Log();
     private Connection connSql = null;
     private Connection connMysql = null;
     private PreparedStatement st = null;
@@ -49,7 +52,11 @@ public class DaoComponenteImple implements org.example.dao.DaoComponente {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Erro ao cadastrar componente: " + e.getMessage());
+            try {
+                logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao cadastrar componente: " + e.getMessage(), "erro de conexao componente");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         return idInserido;
     }
@@ -83,7 +90,11 @@ public class DaoComponenteImple implements org.example.dao.DaoComponente {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Erro ao cadastrar componente: " + e.getMessage());
+            try {
+                logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao cadastrar componente: " + e.getMessage(), "erro de conexao componente");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         return idInserido;
     }
@@ -113,7 +124,11 @@ public class DaoComponenteImple implements org.example.dao.DaoComponente {
                 componentes.add(componente);
             }
         } catch (SQLException e) {
-            System.out.println("Erro ao buscar componente: " + e.getMessage());
+            try {
+                logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao buscar componente: " + e.getMessage(), "erro de conexao componente");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         return componentes;
     }
@@ -147,7 +162,11 @@ public class DaoComponenteImple implements org.example.dao.DaoComponente {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Erro ao buscar componente: " + e.getMessage());
+            try {
+                logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao buscar componente: " + e.getMessage(), "erro de conexao componente");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         return componentes;
     }
