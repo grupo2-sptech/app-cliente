@@ -118,33 +118,33 @@ public class Maquina {
 //            }
 //        });
 //
-//        Thread monitoramentoThread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                while (true) {
-//                    FucionalidadeConsole fucionalidadeConsole = new FucionalidadeConsole();
-//                    fucionalidadeConsole.limparConsole();
-//                    Utilitarios utilitarios = new Utilitarios();
-//                    utilitarios.mensagemInformativa();
-//                    try {
-//                        janelasBloqueadas.monitorarJanelas(daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa())), maquina);
-//                    } catch (InterruptedException e) {
-//                        System.out.println("Erro ao monitorar as janelas " + e);
-//                    }
-//                }
-//            }
-//        });
+        Thread monitoramentoThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    FucionalidadeConsole fucionalidadeConsole = new FucionalidadeConsole();
+                    fucionalidadeConsole.limparConsole();
+                    Utilitarios utilitarios = new Utilitarios();
+                    utilitarios.mensagemInformativa();
+                    try {
+                        janelasBloqueadas.monitorarJanelas(daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa())), maquina);
+                    } catch (InterruptedException e) {
+                        System.out.println("Erro ao monitorar as janelas " + e);
+                    }
+                }
+            }
+        });
 //
 //        registroThread.start();
-//        monitoramentoThread.start();
+        monitoramentoThread.start();
 
         while (true) {
             daoRegistro.inserirRegistroTempoReal(maquina);
-            fucionalidadeConsole.limparConsole();
-            Utilitarios utilitarios = new Utilitarios();
-            utilitarios.mensagemInformativa();
-            janelasBloqueadas.monitorarJanelas(daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa())), maquina);
-            Thread.sleep(1000);
+//            fucionalidadeConsole.limparConsole();
+//            Utilitarios utilitarios = new Utilitarios();
+//            utilitarios.mensagemInformativa();
+//            janelasBloqueadas.monitorarJanelas(daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa())), maquina);
+//            Thread.sleep(1000);
         }
     }
 
