@@ -104,50 +104,48 @@ public class Maquina {
             }
         }, 2 * 60 * 1000, 2 * 60 * 1000);
 
-        Thread registroThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                FucionalidadeConsole fucionalidadeConsole = new FucionalidadeConsole();
-                fucionalidadeConsole.limparConsole();
-                while (true) {
-                    daoRegistro.inserirRegistroTempoReal(maquina);
+//        Thread registroThread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while (true) {
+//                    daoRegistro.inserirRegistroTempoReal(maquina);
 //                    try {
 //                        Thread.sleep(1000);
 //                    } catch (InterruptedException e) {
 //
 //                    }
-                }
-            }
-        });
+//                }
+//            }
+//        });
+//
+//        Thread monitoramentoThread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while (true) {
+//                    FucionalidadeConsole fucionalidadeConsole = new FucionalidadeConsole();
+//                    fucionalidadeConsole.limparConsole();
+//                    Utilitarios utilitarios = new Utilitarios();
+//                    utilitarios.mensagemInformativa();
+//                    try {
+//                        janelasBloqueadas.monitorarJanelas(daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa())), maquina);
+//                    } catch (InterruptedException e) {
+//                        System.out.println("Erro ao monitorar as janelas " + e);
+//                    }
+//                }
+//            }
+//        });
+//
+//        registroThread.start();
+//        monitoramentoThread.start();
 
-        Thread monitoramentoThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    FucionalidadeConsole fucionalidadeConsole = new FucionalidadeConsole();
-                    fucionalidadeConsole.limparConsole();
-                    Utilitarios utilitarios = new Utilitarios();
-                    utilitarios.mensagemInformativa();
-                    try {
-                        janelasBloqueadas.monitorarJanelas(daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa())), maquina);
-                    } catch (InterruptedException e) {
-                        System.out.println("Erro ao monitorar as janelas " + e);
-                    }
-                }
-            }
-        });
-
-        registroThread.start();
-        monitoramentoThread.start();
-
-//        while (true) {
-//            daoRegistro.inserirRegistroTempoReal(maquina);
-//            fucionalidadeConsole.limparConsole();
-//            Utilitarios utilitarios = new Utilitarios();
-//            utilitarios.mensagemInformativa();
-//            janelasBloqueadas.monitorarJanelas(daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa())), maquina);
-////            Thread.sleep(1000);
-//        }
+        while (true) {
+            daoRegistro.inserirRegistroTempoReal(maquina);
+            fucionalidadeConsole.limparConsole();
+            Utilitarios utilitarios = new Utilitarios();
+            utilitarios.mensagemInformativa();
+            janelasBloqueadas.monitorarJanelas(daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa())), maquina);
+            Thread.sleep(1000);
+        }
     }
 
     public void cadastrarMaquina(Maquina maquina, Usuario usuario) throws SQLException, IOException {
