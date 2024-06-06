@@ -2,12 +2,18 @@ package org.example.entities;
 
 import org.example.dao.Implementation.DaoUsuarioImple;
 import org.example.utilities.Utilitarios;
+import org.example.utilities.log.Log;
 
 import java.io.Console;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Usuario {
+
+
     private Integer id;
     private String nome;
     private String email;
@@ -15,6 +21,8 @@ public class Usuario {
     private String cargo;
     private String login;
     private Integer idEmpresa;
+
+
 
     Console console = System.console();
 
@@ -36,7 +44,9 @@ public class Usuario {
         this.login = login;
     }
 
-    public Usuario validarUsuario() throws SQLException {
+    public Usuario validarUsuario() throws SQLException, IOException {
+
+
         Usuario usuario = new Usuario();
         Scanner sc = new Scanner(System.in);
         Utilitarios utilitarios = new Utilitarios();
@@ -60,6 +70,7 @@ public class Usuario {
             usuario = daoUsuario.validarUsuarioSql(login, senha);
             if (usuario.getNome() == null) {
                 return null;
+
             }
         }
         return usuario;

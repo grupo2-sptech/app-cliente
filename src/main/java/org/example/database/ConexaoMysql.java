@@ -1,13 +1,15 @@
 package org.example.database;
 
+import org.example.utilities.log.Log;
+
 import java.sql.*;
 
 public class ConexaoMysql extends Conexao {
 
 
     private static final String URL = "jdbc:mysql://:3306/hardware_security";
-    private static final String USUARIO = "aluno1";
-    private static final String SENHA = "123";
+    private static final String USUARIO = "root";
+    private static final String SENHA = "Rafaella01.";
 
     static {
         try {

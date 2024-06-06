@@ -2,13 +2,16 @@ package org.example.dao.Implementation;
 
 import org.example.database.ConexaoSQLServer;
 import org.example.entities.Maquina;
+import org.example.utilities.log.Log;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class DaoAlertaimple implements org.example.dao.DaoAlerta {
 
+    Log logTeste = new Log();
     private Connection conn = null;
     private PreparedStatement st = null;
     private ResultSet rs = null;
@@ -35,7 +38,11 @@ public class DaoAlertaimple implements org.example.dao.DaoAlerta {
                 mediaUso = (rs.getDouble("Media_RAM_Ocupada"));
             }
         } catch (Exception e) {
-            System.out.println("Erro ao buscar média de uso de CPU: " + e.getMessage());
+            try {
+                logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao buscar média de uso de CPU: " + e.getMessage(), "erro de conexao alerta");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         return mediaUso;
     }
@@ -62,7 +69,12 @@ public class DaoAlertaimple implements org.example.dao.DaoAlerta {
                 mediaUso = (rs.getDouble("Media_CPU_Ocupada"));
             }
         } catch (Exception e) {
-            System.out.println("Erro ao buscar média de uso de CPU: " + e.getMessage());
+            try {
+                logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao buscar média de uso de CPU: " + e.getMessage(), "erro de conexao alerta");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
         }
         return mediaUso;
     }
@@ -81,7 +93,12 @@ public class DaoAlertaimple implements org.example.dao.DaoAlerta {
             st.setDouble(2, usoRam);
             st.executeUpdate();
         } catch (Exception e) {
-            System.out.println("Erro ao inserir alerta: " + e.getMessage());
+            try {
+                logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao inserir alerta: " + e.getMessage(), "erro de conexao alerta");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
             conn = null;
         }
     }
@@ -99,7 +116,11 @@ public class DaoAlertaimple implements org.example.dao.DaoAlerta {
             st.setDouble(2, usoCpu);
             st.executeUpdate();
         } catch (Exception e) {
-            System.out.println("Erro ao inserir alerta: " + e.getMessage());
+            try {
+                logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Erro: " + "Erro ao inserir alerta: " + e.getMessage(), "erro de conexao alerta");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
             conn = null;
         }
     }

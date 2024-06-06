@@ -21,6 +21,7 @@ public class Maquina {
     LocalDateTime currentDateTime = LocalDateTime.now();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss");
     String formattedDateTime = currentDateTime.format(formatter);
+
     private Integer id;
     private String idPorcessador;
     private String mac;
@@ -150,7 +151,6 @@ public class Maquina {
 
     public void cadastrarMaquina(Maquina maquina, Usuario usuario) throws SQLException, IOException {
 
-        logTeste.geradorLog(logTeste.cabecalho(), "criação");
         logTeste.geradorLog("[" + logTeste.fomatarHora() + "] Funcionario responsavel pelo cadastro: " + usuario.getNome() + " - Cargo: " + usuario.getCargo() + " - Login: " + usuario.getLogin(), "criação");
         DaoMaquina daoMaquina = new DaoMaquinaImple();
         DaoComponente daoComponente = new DaoComponenteImple();
@@ -177,6 +177,9 @@ public class Maquina {
                 sc.nextLine(); // Limpa a entrada inválida
             } catch (Exception e) {
                 System.out.println("Erro inesperado: " + e.getMessage());
+
+
+
             }
         }
 
