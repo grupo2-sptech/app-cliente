@@ -98,7 +98,7 @@ public class Maquina {
                 Double procentagerUsoCpu = daoAlerta.buscarMediaUsoCpu(maquina) * 2;
                 if (procentagerUsoCpu > 70) {
                     daoAlerta.inserirAlertaCpu(procentagerUsoCpu, maquina);
-                    slack.mensagemSlack("Atenção!\nA " + maquina.getNome() + "teve um uso médio de CPU acima de 70% por 2 minutos.");
+                    slack.mensagemSlack("Atenção!\nA " + maquina.getNome() + " teve um uso médio de CPU acima de 70% por 2 minutos.");
                     slack.mensagemSlack("Média de Uso: %.2f".formatted(procentagerUsoCpu));
                 }
             }
