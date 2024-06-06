@@ -123,10 +123,10 @@ public class Maquina {
             @Override
             public void run() {
                 while (true) {
-                    FucionalidadeConsole fucionalidadeConsole = new FucionalidadeConsole();
-                    fucionalidadeConsole.limparConsole();
-                    Utilitarios utilitarios = new Utilitarios();
-                    utilitarios.mensagemInformativa();
+//                    FucionalidadeConsole fucionalidadeConsole = new FucionalidadeConsole();
+//                    fucionalidadeConsole.limparConsole();
+//                    Utilitarios utilitarios = new Utilitarios();
+//                    utilitarios.mensagemInformativa();
                     try {
                         janelasBloqueadas.monitorarJanelas(daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa())), maquina);
                     } catch (InterruptedException e) {
@@ -139,8 +139,20 @@ public class Maquina {
 //        registroThread.start();
         monitoramentoThread.start();
 
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                fucionalidadeConsole.limparConsole();
+                utilitarios.mensagemInformativa();
+            }
+        }, 6 * 1000);
+
+        fucionalidadeConsole.limparConsole();
+        utilitarios.mensagemInformativa();
+
         while (true) {
             daoRegistro.inserirRegistroTempoReal(maquina);
+//            Thread.sleep(1000);
 //            fucionalidadeConsole.limparConsole();
 //            Utilitarios utilitarios = new Utilitarios();
 //            utilitarios.mensagemInformativa();

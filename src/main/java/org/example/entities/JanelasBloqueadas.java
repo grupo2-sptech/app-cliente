@@ -55,6 +55,8 @@ public class JanelasBloqueadas {
 //                    }
                     System.out.println("Processo " + janela.getTitulo() + " foi encerrado por violar as políticas de segurança da empresa!");
                     Thread.sleep(3000);
+                    func.limparConsole();
+                    utilitarios.mensagemInformativa();
                 }
             }
         }
