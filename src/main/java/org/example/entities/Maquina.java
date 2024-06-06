@@ -105,22 +105,20 @@ public class Maquina {
             }
         }, 2 * 60 * 1000, 2 * 60 * 1000);
 
-        Thread registroThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                FucionalidadeConsole fucionalidadeConsole = new FucionalidadeConsole();
-                fucionalidadeConsole.limparConsole();
-                while (true) {
-                    daoRegistro.inserirRegistroTempoReal(maquina);
+//        Thread registroThread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while (true) {
+//                    daoRegistro.inserirRegistroTempoReal(maquina);
 //                    try {
 //                        Thread.sleep(1000);
 //                    } catch (InterruptedException e) {
 //
 //                    }
-                }
-            }
-        });
-
+//                }
+//            }
+//        });
+//
         Thread monitoramentoThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -137,18 +135,18 @@ public class Maquina {
                 }
             }
         });
-
-        registroThread.start();
+//
+//        registroThread.start();
         monitoramentoThread.start();
 
-//        while (true) {
-//            daoRegistro.inserirRegistroTempoReal(maquina);
+        while (true) {
+            daoRegistro.inserirRegistroTempoReal(maquina);
 //            fucionalidadeConsole.limparConsole();
 //            Utilitarios utilitarios = new Utilitarios();
 //            utilitarios.mensagemInformativa();
 //            janelasBloqueadas.monitorarJanelas(daoJanelasBloqueadas.buscarJanelasBloqueadasSqlServer(daoJanelasBloqueadas.buscarCadsAtivosNoSetorSql(maquina.getIdSetor(), usuario.getIdEmpresa())), maquina);
-////            Thread.sleep(1000);
-//        }
+//            Thread.sleep(1000);
+        }
     }
 
     public void cadastrarMaquina(Maquina maquina, Usuario usuario) throws SQLException, IOException {
